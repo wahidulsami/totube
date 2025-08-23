@@ -1,0 +1,69 @@
+@import "tailwindcss"; 
+
+
+/* Base toast */
+.Toastify__toast {
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 16px;
+}
+
+/* Success toast */
+.Toastify__toast--success {
+  
+  color: #fff !important;
+  padding: 8px 8px;
+}
+
+/* Error toast */
+.Toastify__toast--error {
+  background: #dc2626 !important; /* custom red */
+  color: #fff !important;
+}
+
+/* Info toast */
+.Toastify__toast--info {
+  background: #2563eb !important; /* custom blue */
+  color: #fff !important;
+}
+
+/* Warning toast */
+.Toastify__toast--warning {
+  background: #f59e0b !important; /* custom yellow */
+  color: #000 !important;
+}
+
+/* Close button */
+.Toastify__close-button {
+  color: rgb(243, 243, 243) !important;
+  opacity: 1 !important;
+}
+.Toastify__close-button {
+  opacity: 0 !important;
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* hover করলে icon আসবে */
+.Toastify__toast:hover .Toastify__close-button {
+  opacity: 1 !important;
+}
+/* Success toast icon color green */
+.Toastify__toast--success .Toastify__toast-icon svg {
+  fill: #ffffff; /* Tailwind green-500 */
+}
+
+/* Error toast icon color red */
+.Toastify__toast--error .Toastify__toast-icon svg {
+  fill: #ffffff; /* Tailwind red-500 */
+}
+
+/* Info toast icon color blue */
+.Toastify__toast--info .Toastify__toast-icon svg {
+  fill: #f7f7f7; /* Tailwind blue-500 */
+}
+
+/* Warning toast icon color yellow */
+.Toastify__toast--warning .Toastify__toast-icon svg {
+  fill: #ffffff; /* Tailwind yellow-500 */
+}
