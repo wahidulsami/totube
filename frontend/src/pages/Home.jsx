@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import NavBar from "./Navbar";
-
+import { toast } from "react-toastify";
 function Home() {
   const { user } = useSelector((state) => state.auth);
 
@@ -8,7 +8,7 @@ function Home() {
     <div className="min-h-screen bg-gray-950 text-white">
       {/* Navbar */}
       <NavBar />
-
+ <button onClick={() => toast.success("reponsive plz")}>guta mar</button>
       {/* Page content */}
       {!user ? (
         <main className="p-6 flex justify-center items-center min-h-screen flex-col">
@@ -23,6 +23,7 @@ function Home() {
           <p className="text-gray-400">
             Welcome {user.username || "User"}! You can start building your
             dashboard or home page content here.
+           
           </p>
         </main>
       )}

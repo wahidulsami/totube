@@ -1,4 +1,4 @@
-import { Routes, Route, data } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import { ToastContainer, Slide } from "react-toastify";
@@ -33,7 +33,7 @@ function App() {
   }, [dispatch]);
 
   if (loading) return <p>Loading....</p>;
-
+ 
   return (
     <div>
       <Routes>
@@ -54,6 +54,7 @@ function App() {
         draggable
         theme="dark"
         transition={Slide}
+         toastClassName="custom-toast"
       />
     </div>
   );
