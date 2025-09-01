@@ -10,6 +10,7 @@ import PasswordField from "../ui/PasswordField";
 import AvatarField from "../ui/AvatarUploader";
 import { Spinner } from "../ui/shadcn-io/spinner";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 export default function SignupComponent() {
   const {
     register,
@@ -21,9 +22,9 @@ export default function SignupComponent() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-   const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const onSubmit = async (formData) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const res = await registerUser(formData);
 
@@ -42,8 +43,8 @@ export default function SignupComponent() {
       navigate("/");
     } catch (err) {
       toast.error(err.message || "Registration failed");
-    } finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,15 +67,13 @@ export default function SignupComponent() {
           <div className="space-y-4"></div>
 
           <form onSubmit={handleSubmit(onSubmit)}>
-
-              <AvatarField
+            <AvatarField
               id="avatar"
               name="avatar"
               register={register}
               setValue={setValue}
               error={errors.avatar}
             />
-
 
             <InputField
               id="full name"
@@ -126,9 +125,18 @@ export default function SignupComponent() {
               error={errors.password}
             />
 
-            {/* Avatar Upload */}
+        
 
-   <button
+            <div className="w-full flex justify-center mt-3">
+              <p className="text-sm text-[#A8A8A8]">
+                Already have an account?
+                <Link to="/login" className="ml-2 text-red-500 hover:underline">
+                  Sign in
+                </Link>
+              </p>
+            </div>
+
+            <button
               type="submit"
               disabled={loading}
               className="w-full mt-5 cursor-pointer flex items-center justify-center gap-2 rounded-md bg-red-600
@@ -142,7 +150,6 @@ export default function SignupComponent() {
                 "Sign up"
               )}
             </button>
-
           </form>
         </div>
       </div>

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { getCurrentUser } from "./api/auth.api";
 import { useDispatch } from "react-redux";
 import { loginSuccess , logout } from "./store/authReducer";
-
+import Resetpassword from "./components/auth/Resetpassword";
 function App() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -41,6 +41,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<Resetpassword />} />
+
       </Routes>
 
       {/* Toast Container */}

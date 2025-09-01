@@ -49,3 +49,37 @@ export const getCurrentUser = async () => {
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
+
+export const sendResetPasswordOTP = async (email) => {
+  try {
+    const { data } = await api.post("/users/reset-password-otp", { email });
+    return data;
+  } catch (error) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+};
+
+export const resetPassword = async ({ email, otp, newPassword }) => {
+  try {
+    const { data } = await api.post("/users/reset-password", {
+      email,
+      otp,
+      newPassword,
+    });
+    return data;
+  } catch (error) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+};
+
+
+export  const verifyOTP = async ({ email, otp }) => {
+try {
+    const {data} = await api.post("/users/verify-otp", { email, otp });
+  return data;
+  
+} catch (error) {
+    throw error.response?.data || { message: "Something went wrong" };
+  
+}
+}

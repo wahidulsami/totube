@@ -24,9 +24,9 @@ export default function NavBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const popupRef = useRef(null);
+const popupRef = useRef(null);
 
-const user = useSelector((state) => state.auth.user);
+  const { user } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -133,7 +133,7 @@ const user = useSelector((state) => state.auth.user);
                 <img
                   src={user.avatar}
                   alt="User avatar"
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full object-cover"
+                  className="w-8 h-8 cursor-pointer sm:w-9 sm:h-9 rounded-full object-cover"
                 />
               ) : (
                 <div className="w-8 h-8 sm:w-9 sm:h-9 flex justify-center items-center rounded-full bg-pink-500 text-white font-semibold cursor-pointer">
@@ -144,7 +144,7 @@ const user = useSelector((state) => state.auth.user);
 
             {/* Dropdown */}
             {isAccountOpen && (
-              <div className="absolute right-0 mt-2 w-64 sm:w-80 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50">
+              <div className="absolute cursor-pointer right-0 mt-2 w-64 sm:w-80 bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-50">
                 {/* User Info */}
                 <div className="p-4 border-b border-gray-700">
                   <div className="flex items-center space-x-3">
@@ -232,7 +232,7 @@ const user = useSelector((state) => state.auth.user);
 }
 
 /* Helpers */
-function DropdownItem({ icon, text, rightText, danger, onClick }) {
+function DropdownItem({ icon, text, rightText = null, danger = false, onClick = () => {} }) {
   return (
     <button
       onClick={onClick}

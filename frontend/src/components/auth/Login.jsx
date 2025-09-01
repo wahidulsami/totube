@@ -8,7 +8,7 @@ import { loginSuccess } from "../../store/authReducer";
 import InputField from "../ui/InputField";
 import PasswordField from "../ui/PasswordField";
 import { Mail , } from "lucide-react";
-
+import { Link } from "react-router-dom";
 import { Spinner } from "../ui/shadcn-io/spinner";
 export default function LoginComponent() {
   const dispatch = useDispatch();
@@ -58,7 +58,7 @@ const [loading, setLoading] = useState(false)
           <div className="space-y-4"></div>
 
           <form onSubmit={handleSubmit(onSubmit)}>
-  
+
 
             <InputField
               id="email"
@@ -91,7 +91,24 @@ const [loading, setLoading] = useState(false)
               error={errors.password}
             />
 
-            {/* Avatar Upload */}
+            <div className="w-full flex justify-end mt-2">
+              <button
+                type="button"
+                onClick={() => navigate("/forgot-password")}
+                className="text-sm text-[#A8A8A8] hover:text-red-400"
+              >
+                Forgot password?
+              </button>
+            </div>
+
+                 <div className="w-full flex justify-center mt-3">
+              <p className="text-sm text-[#A8A8A8]">
+                Don't have an account?
+                <Link to="/register" className="ml-2 text-red-500 hover:underline">
+                  Sign up
+                </Link>
+              </p>
+            </div>
 
    <button
               type="submit"
@@ -104,7 +121,7 @@ const [loading, setLoading] = useState(false)
                   <Spinner variant="default" className="text-white" size={20} />
                 </>
               ) : (
-                "Sign up"
+                "Sign in"
               )}
             </button>
 
