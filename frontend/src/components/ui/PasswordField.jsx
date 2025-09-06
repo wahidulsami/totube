@@ -1,11 +1,11 @@
 import { Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
-const PasswordField = ({ id, name, placeholder, register, rules, error }) => {
+const PasswordField = ({ id, name, placeholder, register, rules, error ,className = "", inputClassName = "",  }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="space-y-1">
+ <div className={`space-y-1 ${className}`}>
       <label
         htmlFor={id}
         className="block text-sm font-medium text-white mb-2"
@@ -24,12 +24,13 @@ const PasswordField = ({ id, name, placeholder, register, rules, error }) => {
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? `${id}-error` : undefined}
           className={`h-12 w-full rounded-lg bg-[#141414]
-  px-4 pl-12 text-white placeholder:text-gray-500
-  border-1 transition-all duration-200
+            px-4 pl-12 text-white placeholder:text-gray-500
+            border-1 transition-all duration-200
             ${error
               ? "border-red-500 ring-2 ring-red-500/50 focus:ring-red-500/50"
               : "border-gray-700 focus:border-red-500 focus:ring-1 focus:ring-red-500"
-            } focus:outline-none`}
+            } focus:outline-none
+            ${inputClassName}`}   // apply extra inputClassName
         />
 
         {/* Eye toggle */}

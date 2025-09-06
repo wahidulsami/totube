@@ -175,9 +175,9 @@ const popupRef = useRef(null);
 
                 {/* Menu */}
                 <div className="py-2">
-                  <DropdownItem icon={<User />} text="Account Settings" />
-                  <DropdownItem icon={<User />} text="Your Channel" />
-                  <DropdownItem icon={<Settings />} text="YouTube Studio" />
+                  <DropdownItem icon={<User />} text="Account Settings" onClick={() => navigate("/accountsettings")} />
+                  <DropdownItem icon={<User />} text="Your Channel" onClick={() => navigate('/channel')} />
+                  <DropdownItem icon={<Settings />} text="Dashboard" onClick={() => navigate('/dashboard')} />
                   <Divider />
                   <DropdownItem
                     icon={<Moon />}

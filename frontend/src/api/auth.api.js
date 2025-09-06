@@ -1,12 +1,9 @@
 import api from "./api";
 
-
-
 export const registerUser = async (data) => {
   const formData = new FormData();
   for (let key in data) {
     if (key === "avatar" && data[key]?.[0]) {
-      
       formData.append(key, data[key][0]);
     } else {
       formData.append(key, data[key]);
@@ -19,13 +16,12 @@ export const registerUser = async (data) => {
     return data;
   } catch (error) {
     throw error.response?.data || { message: "Something went wrong" };
- 
   }
 };
 
 export const loginUser = async (formData) => {
   try {
-    const { data } = await api.post("/users/login", formData );
+    const { data } = await api.post("/users/login", formData);
     return data;
   } catch (error) {
     throw error.response?.data || { message: "Something went wrong" };
@@ -72,14 +68,76 @@ export const resetPassword = async ({ email, otp, newPassword }) => {
   }
 };
 
-
-export  const verifyOTP = async ({ email, otp }) => {
-try {
-    const {data} = await api.post("/users/verify-otp", { email, otp });
-  return data;
-  
-} catch (error) {
+export const verifyOTP = async ({ email, otp }) => {
+  try {
+    const { data } = await api.post("/users/verify-otp", { email, otp });
+    return data;
+  } catch (error) {
     throw error.response?.data || { message: "Something went wrong" };
-  
-}
-}
+  }
+};
+
+export const changePassword = async ({ oldPassword, newPassword }) => {
+  try {
+    const { data } = await api.post("/users/change-password", {
+      oldPassword,
+      newPassword,
+    });
+    return data;
+  } catch (error) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+};
+
+export const updateProfile = async ({ fullname, email, bio, social }) => {
+  try {
+    const { data } = await api.patch("/users/update-account-details", {
+      fullname,
+      email,
+      bio,
+      social,
+    });
+    return data;
+  } catch (error) {
+    throw error.response?.data || { message: "Something went wrong" };
+  }
+};
+
+
+export const updateAvatar = async (file) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("avatar", file);
+
+    const { data } = await api.patch("/users/update-avatar", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
+
+    return data;
+  } catch (error) {
+    throw error.response?.data || "Something went  wrong";
+  }
+};
+
+export const updateCover = async (file) => {
+  try {
+    const formData = new FormData();
+
+    formData.append("coverImage", file);
+
+    const { data } = await api.patch("/users/update-cover", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
+
+    return data;
+  } catch (error) {
+    throw error.response?.data || "Something went  wrong";
+  }
+};

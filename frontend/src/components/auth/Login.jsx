@@ -15,29 +15,39 @@ export default function LoginComponent() {
   const navigate = useNavigate();
   const { register, handleSubmit,   formState: { errors } } = useForm();
 const [loading, setLoading] = useState(false)
-  const onSubmit = async (data) => {
-    setLoading(true)
-    try {
-      const res = await loginUser(data);
 
-      if (res?.data) {
-       
-        dispatch(loginSuccess({
-          user: res.data.user,             
-          accessToken: res.data.accessToken || null,
-          refreshToken: res.data.refreshToken || null,
-        }));
+const onSubmit = async (formData) => {
+  setLoading(true);
+  try {
+    const res = await loginUser(formData); // your API wrapper already returns res.data
 
-        toast.success("Login successful!");
-        navigate("/"); 
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Login failed");
-      console.error(error);
-    } finally{
-      setLoading(false)
+    console.log("Login response:", res); // Debug: see the actual response
+
+    if (res.success) {
+      // Login successful
+      dispatch(
+        loginSuccess({
+          user: res.data.user,
+          accessToken: res.data.accessToken,
+          refreshToken: res.data.refreshToken,
+        })
+      );
+      toast.success(res.message || "Login successful");
+      navigate("/"); 
+    } else {
+      // Login failed (backend returned success: false)
+      toast.error(res.message || "Login failed");
     }
-  };
+  } catch (error) {
+    // Network or unexpected error
+    console.error("Login error:", error);
+    toast.error(error.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_center,_#1a1a1a_0%,_#0F0F0F_70%)]">

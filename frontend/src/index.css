@@ -1,12 +1,20 @@
 @import "tailwindcss";
 
 @import "tw-animate-css";
+html, body {
+  overflow-x: hidden;
+}
+
+
 
 /* তারপর plugin */
 @plugin "tailwindcss-animate";
 
 /* তারপর custom variants */
 @custom-variant dark (&:is(.dark *));
+
+
+
 
 /* Base toast configuration */
 .Toastify__toast {
@@ -259,3 +267,5 @@
     @apply bg-background text-foreground;
   }
 }
+
+

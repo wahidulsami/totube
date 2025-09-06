@@ -6,5 +6,8 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [animatePlugin],
+  plugins: [animatePlugin ,
+     require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
+
 };
