@@ -1,6 +1,9 @@
 import { useSelector } from "react-redux";
 import NavBar from "./Navbar";
 import { toast } from "react-toastify";
+import VideoList from "@/components/video/videoList";
+
+
 function Home() {
   const { user } = useSelector((state) => state.auth);
 
@@ -8,6 +11,9 @@ function Home() {
     <div className="min-h-screen bg-gray-950 text-white">
       {/* Navbar */}
       <NavBar />
+<VideoList />
+
+
  <button onClick={() => toast.success("reponsive plz")}>guta mar</button>
       {/* Page content */}
       {!user ? (
@@ -23,7 +29,7 @@ function Home() {
           <p className="text-gray-400">
             Welcome {user.username || "User"}! You can start building your
             dashboard or home page content here.
-           
+
           </p>
         </main>
       )}

@@ -1,10 +1,17 @@
-import React from 'react'
-import Sidebar from './sidebar'
+// components/dashboard/dashboard.jsx
+import React from "react";
+import Sidebar from "./sidebar";
+import { Outlet } from "react-router-dom";
 
-const Dashboard = () => {
+export default function Dashboard() {
   return (
-    <Sidebar />
-  )
-}
+    <div className="flex h-screen bg-[#0A0A0A]">
+      <Sidebar />
 
-export default Dashboard
+      <main className="flex-1 overflow-auto p-6">
+        {/* child routes will render here */}
+        <Outlet />
+      </main>
+    </div>
+  );
+}

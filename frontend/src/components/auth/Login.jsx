@@ -21,10 +21,10 @@ const onSubmit = async (formData) => {
   try {
     const res = await loginUser(formData); // your API wrapper already returns res.data
 
-    console.log("Login response:", res); // Debug: see the actual response
+  
 
     if (res.success) {
-      // Login successful
+
       dispatch(
         loginSuccess({
           user: res.data.user,
@@ -35,12 +35,11 @@ const onSubmit = async (formData) => {
       toast.success(res.message || "Login successful");
       navigate("/"); 
     } else {
-      // Login failed (backend returned success: false)
+   
       toast.error(res.message || "Login failed");
     }
   } catch (error) {
-    // Network or unexpected error
-    console.error("Login error:", error);
+
     toast.error(error.message || "Something went wrong");
   } finally {
     setLoading(false);

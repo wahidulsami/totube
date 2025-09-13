@@ -38,7 +38,7 @@
 //   }, [dispatch]);
 
 //   if (loading) return <p>Loading....</p>;
- 
+
 //   return (
 //     <div>
 //       <Routes>
@@ -48,14 +48,11 @@
 //         <Route path="/register" element={<Register />} />
 //         <Route path="/register" element={<Register />} />
 //         <Route path="/forgot-password" element={<Resetpassword />} />
-      
+
 // <Route path="/dashboard" element={<Sidebar />}/>
 //   <Route index element={<Dashboard />} />
 //   <Route path="profile" element={<Profile />} />
 //   <Route path="setting" element={<Setting />} />
-
-
-
 
 //         <Route path="/channel" element={<YourChannel />} />
 
@@ -80,8 +77,6 @@
 
 // export default App;
 
-
-
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -99,6 +94,7 @@ import YourChannel from "./components/channel/yourChannel";
 import Sidebar from "./components/dashboard/sidebar";
 import { Outlet } from "react-router-dom";
 import DashboardHome from "./components/dashboard/dashboardHome";
+import VideoUpload from "./components/video/videoUpload";
 function App() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -110,7 +106,7 @@ function App() {
           dispatch(
             loginSuccess({
               user: res.data,
-              accessToken: null, 
+              accessToken: null,
               refreshToken: null,
             })
           );
@@ -137,11 +133,14 @@ function App() {
         <Route path="/forgot-password" element={<Resetpassword />} />
         <Route path="/channel" element={<YourChannel />} />
 
+        {/* VIDEOS */}
+
         {/* Dashboard Routes (nested inside Sidebar layout) */}
         <Route path="/dashboard" element={<SidebarLayout />}>
           <Route index element={<DashboardHome />} />
           <Route path="profile" element={<Profile />} />
           <Route path="setting" element={<Setting />} />
+          <Route path="videoUpload" element={<VideoUpload />} />
         </Route>
       </Routes>
 

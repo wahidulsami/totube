@@ -13,11 +13,13 @@ import {
   HelpCircle,
   Search,
   Plus,
+CirclePlus,
   PanelLeft,
   User,
   Shield,
   ChevronDown,
   LogOut,
+  BadgePlus,
 } from "lucide-react";
 import { NavLink } from "react-router";
 import { useSelector } from "react-redux";
@@ -27,6 +29,9 @@ import { logout } from "../../store/authReducer";
 import { logout as apiLogout } from "../../api/auth.api";
 import { useDispatch } from "react-redux";
 import { useRef } from 'react';
+
+
+
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -100,6 +105,7 @@ useEffect(() => {
 
   const navItems = [
     { id: "home", label: "Home", icon: Home, path: "/dashboard" },
+    {id:"Quick create" , label:"Quick create" , icon:CirclePlus , path:"/dashboard/videoUpload"},
     { id: "profile", label: "Profile", icon: User, path: "/dashboard/profile" },
     {
       id: "password",

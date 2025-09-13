@@ -114,6 +114,7 @@ html, body {
 .Toastify__toast-container {
   width: auto;
   padding: 4px;
+  border-radius: 20px;
 }
 
 @media (max-width: 640px) {
