@@ -25,14 +25,14 @@ import { NavLink } from "react-router";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
-import { logout } from "../../store/authReducer";
-import { logout as apiLogout } from "../../api/auth.api";
+import { logout } from "../store/authReducer";
+import { logout as apiLogout } from "../api/auth.api";
 import { useDispatch } from "react-redux";
 import { useRef } from 'react';
 
 
 
-const Sidebar = () => {
+const Homesidebar = () => {
   const [isExpanded, setIsExpanded] = useState(true);
 
  const { user } = useSelector((state) => state.auth);
@@ -104,8 +104,8 @@ useEffect(() => {
   // ];
 
   const navItems = [
-    { id: "home", label: "Home", icon: Home, path: "/dashboard" },
-    {id:"Quick create" , label:"Quick create" , icon:CirclePlus , path:"/dashboard/videoUpload"},
+    { id: "home", label: "Home", icon: Home, path: "/" },
+    {id:"Video" , label:"Video" , icon:CirclePlus , path:"/Video"},
     { id: "profile", label: "Profile", icon: User, path: "/dashboard/profile" },
     {
       id: "password",
@@ -238,7 +238,7 @@ useEffect(() => {
               ToTube.
             </h1>
           </div>
-          <h1
+          <button
             onClick={handleToggle}
             className="p-1.5 sm:p-2 cursor-pointer rounded-lg  hover:bg-gray-800 text-gray-400 hover:text-white transition-colors flex-shrink-0"
           >
@@ -247,7 +247,7 @@ useEffect(() => {
             ) : (
               <PanelRight size={18} />
             )}
-          </h1>
+          </button>
         </div>
 
         {/* Main Navigation */}
@@ -317,8 +317,7 @@ useEffect(() => {
                 <div className="text-white text-xs sm:text-sm font-medium transition-colors duration-200 group-hover:text-blue-100">
                   {user?.username || "Guest"}
                 </div>
-                <div className="text-gray-400 text-xs transition-colors 
-                duration-200 group-hover:text-gray-300">
+                <div className="text-gray-400 text-xs transition-colors duration-200 group-hover:text-gray-300">
                   {user?.email || "guest@example.com"}
                 </div>
               </div>
@@ -421,4 +420,4 @@ useEffect(() => {
   );
 };
 
-export default Sidebar;
+export default Homesidebar;

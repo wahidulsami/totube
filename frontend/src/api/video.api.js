@@ -67,7 +67,7 @@ export const updateVideo = async (videoId, { title, description, thumbnail }) =>
 
 export const deleteVideo = async (videoId) => {
   try {
-    const { data } = await api.delete(`/videos/deleteVideo/${videoId}`);
+    const { data } = await api.delete(`/video/deleteVideo/${videoId}`);
     return data;
   } catch (error) {
     throw error.response?.data || { message: "Something went wrong" };
@@ -77,7 +77,7 @@ export const deleteVideo = async (videoId) => {
 
 export const togglePublishStatus = async (videoId) => {
   try {
-    const { data } = await api.patch(`/videos/${videoId}/toggle-publish`);
+    const { data } = await api.patch(`/video/${videoId}/toggle-publish`);
     return data;
   } catch (error) {
     throw error.response?.data || { message: "Something went wrong" };
