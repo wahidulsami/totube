@@ -12,17 +12,18 @@ import { useDispatch } from "react-redux";
 import { loginSuccess, logout } from "./store/authReducer";
 import Resetpassword from "./components/auth/Resetpassword";
 import Profile from "./components/dashboard/profile";
-import Setting from "./components/dashboard/setting";
+
 import YourChannel from "./components/channel/yourChannel";
 import Sidebar from "./components/dashboard/sidebar";
 import { Outlet } from "react-router-dom";
 import DashboardHome from "./components/dashboard/dashboardHome";
 import VideoUpload from "./components/video/videoUpload";
+import SettingsPage from "./components/dashboard/SetingModel";
 // import Videoplayer from "./pages/videoplayer";
 // import VideoDetails from "./components/video/VideoDetails";
 import VideoPage from "./pages/videoplayer";
 import { Spinner } from "./components/ui/shadcn-io/spinner";
-import Homesidebar from "./pages/HomeSlidebar";
+
 function App() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
@@ -69,21 +70,22 @@ if (loading) {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<Resetpassword />} />
         <Route path="/channel" element={<YourChannel />} />
+        <Route path="/accountsettings" element={<SettingsPage />} />
+
         
       <Route path="/video/:id" element={<VideoPage />} />
 
 
         {/* VIDEOS */}
-        <Route path="/" element={<HomeSidebar />}>
+      
         <Route path="/" element={<Home />} />
 
-    </Route>
+
 
         {/* Dashboard Routes (nested inside Sidebar layout) */}
         <Route path="/dashboard" element={<SidebarLayout />}>
           <Route index element={<DashboardHome />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="setting" element={<Setting />} />
           <Route path="videoUpload" element={<VideoUpload />} />
         </Route>
       </Routes>
@@ -118,14 +120,5 @@ function SidebarLayout() {
 }
 
 
-function HomeSidebar() {
-  return (
-        <div className="flex h-screen">
-      <Homesidebar />
-      <main className="flex-1 p-4 bg-[#0A0A0A] overflow-auto">
-        <Outlet />
-      </main>
-    </div>
-  )
-}
+
 export default App;

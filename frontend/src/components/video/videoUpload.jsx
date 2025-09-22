@@ -114,7 +114,7 @@ const handleThumnailImageChange = (e) => {
  
 
 
-      <div className="relative z-10 max-w-7xl mx-auto">
+      <div className="relative z-10 max-w-7xl mx-auto mt-20 ">
         {/* Header */}
 
          

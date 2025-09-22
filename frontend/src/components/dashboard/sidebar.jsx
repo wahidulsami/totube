@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   PanelRight,
   Home,
@@ -13,13 +13,16 @@ import {
   HelpCircle,
   Search,
   Plus,
-CirclePlus,
+  CirclePlus,
   PanelLeft,
   User,
   Shield,
   ChevronDown,
   LogOut,
   BadgePlus,
+  Menu,
+  Bell,
+  Video,
 } from "lucide-react";
 import { NavLink } from "react-router";
 import { useSelector } from "react-redux";
@@ -28,41 +31,78 @@ import { useNavigate } from "react-router";
 import { logout } from "../../store/authReducer";
 import { logout as apiLogout } from "../../api/auth.api";
 import { useDispatch } from "react-redux";
-import { useRef } from 'react';
-
-
+import SettingsPage from "./SetingModel";
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(true);
-
- const { user } = useSelector((state) => state.auth);
-
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  // const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
+  const dropdownRef = useRef(null);
+  const sidebarRef = useRef(null);
 
-const dropdownRef = useRef(null);
+  // Handle clicks outside sidebar on mobile
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Close dropdown if clicking outside
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+      
+      // Close sidebar on mobile if clicking outside
+      if (isMobile && sidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        // Check if clicked element is not the menu button or its children
+        const menuButton = document.querySelector('[data-menu-button]');
+        if (menuButton && !menuButton.contains(event.target)) {
+          setSidebarOpen(false);
+        }
+      }
+    };
 
-
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsDropdownOpen(false);
-    }
-  };
-
-  if (isDropdownOpen) {
     document.addEventListener('mousedown', handleClickOutside);
-  }
+    document.addEventListener('touchstart', handleClickOutside);
 
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isDropdownOpen, isMobile, sidebarOpen]);
 
-}, [isDropdownOpen]);
+  // Handle escape key to close sidebar/dropdown
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        if (isDropdownOpen) {
+          setIsDropdownOpen(false);
+        } else if (isMobile && sidebarOpen) {
+          setSidebarOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isDropdownOpen, isMobile, sidebarOpen]);
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isMobile && sidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobile, sidebarOpen]);
+
   const handleLogout = async () => {
     try {
       await apiLogout();
@@ -93,31 +133,30 @@ useEffect(() => {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // const mainNavItems = [
-  //   { id: "quick-create", label: "Quick Create", icon: Plus, active: true },
-  //   { id: "dashboard", label: "Dashboard", icon: Home },
-  //   { id: "profile", label: "Profile", icon: User },
-  //   { id: "password", label: "Password", icon: Shield },
-  //   { id: "analytics", label: "Analytics", icon: BarChart3 },
-  //   { id: "projects", label: "Projects", icon: FolderOpen },
-  //   { id: "team", label: "Team", icon: Users },
-  // ];
-
   const navItems = [
     { id: "home", label: "Home", icon: Home, path: "/dashboard" },
-    {id:"Quick create" , label:"Quick create" , icon:CirclePlus , path:"/dashboard/videoUpload"},
+    { id: "Quick create", label: "Quick create", icon: CirclePlus, path: "/dashboard/videoUpload" },
     { id: "profile", label: "Profile", icon: User, path: "/dashboard/profile" },
-    {
-      id: "password",
-      label: "Password",
-      icon: Shield,
-      path: "/dashboard/setting",
-    },
+    { id: "content", label: "Content", icon: FileText, path: "/dashboard/content" },
+    { id: "analytics", label: "Analytics", icon: BarChart3, path: "/dashboard/analytics" },
+    { id: "community", label: "Community", icon: Users, path: "/dashboard/community" },
+    { id: "subtitles", label: "Subtitles", icon: FileText, path: "/dashboard/subtitles" },
+    { id: "copyright", label: "Copyright", icon: Shield, path: "/dashboard/copyright" },
+    { id: "earn", label: "Earn", icon: Database, path: "/dashboard/earn" },
+    { id: "customization", label: "Customization", icon: PenTool, path: "/dashboard/customization" },
+    { id: "audio", label: "Audio library", icon: Database, path: "/dashboard/audio" },
   ];
 
   const bottomNavItems = [
-    { id: "help", label: "Get Help", icon: HelpCircle },
-    { id: "search", label: "Search", icon: Search },
+    { 
+      id: "settings", 
+      label: "Settings", 
+      icon: Settings, 
+      onClick: () => navigate("/accountsettings"),
+      //  onClick: () => setIsSettingsModalOpen(true), // Open modal
+      isModal: true 
+    },
+    { id: "feedback", label: "Send feedback", icon: HelpCircle, path: "/dashboard/feedback" },
   ];
 
   const handleToggle = () => {
@@ -128,56 +167,73 @@ useEffect(() => {
     }
   };
 
+  const handleNavItemClick = () => {
+    // Close sidebar when clicking nav item on mobile
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  };
+
   const NavItem = ({ item, isSubItem = false }) => {
     const Icon = item.icon;
     const showText = isMobile ? true : isExpanded;
+
+    // Handle modal items differently
+    if (item.isModal) {
+      return (
+        <button
+          onClick={() => {
+            item.onClick();
+            if (isMobile) setSidebarOpen(false);
+          }}
+          className={`
+            group flex items-center cursor-pointer transition-all duration-200
+            px-3 py-2.5 rounded-lg mb-1 w-full text-left
+            ${!showText && !isSubItem && !isMobile ? "justify-center mx-auto" : ""}
+            hover:bg-white/5 text-gray-300 hover:text-white
+          `}
+        >
+          {/* Icon */}
+          <div className="flex items-center justify-center w-6 h-6 text-current">
+            <Icon size={20} />
+          </div>
+
+          {/* Label */}
+          {showText && (
+            <span className="ml-6 text-sm whitespace-nowrap">
+              {item.label}
+            </span>
+          )}
+        </button>
+      );
+    }
 
     return (
       <NavLink
         to={item.path}
         end={item.path === "/dashboard"}
-        onClick={() => isMobile && setSidebarOpen(false)}
+        onClick={handleNavItemClick}
         className={({ isActive }) => `
         group flex items-center cursor-pointer transition-all duration-200
-        ${isSubItem ? "ml-2 pl-4 sm:ml-4 sm:pl-6" : "px-2 sm:px-3"} 
-        py-1 sm:py-1.5 mb-1 rounded-lg
+        px-3 py-2.5 rounded-lg mb-1
         ${!showText && !isSubItem && !isMobile ? "justify-center mx-auto" : ""}
         ${
           isActive
-            ? "   text-white"
-            : "hover:bg-red-600 hover:text-white ease-in-out transition-all"
+            ? "bg-gradient-to-r from-gray-600/50 to-gray-700/50 text-white"
+            : "hover:bg-white/5 text-gray-300 hover:text-white"
         }
       `}
       >
         {({ isActive }) => (
           <>
             {/* Icon */}
-            <div
-              className={`
-       flex items-center justify-center
-    rounded-lg
-    w-8 h-8 sm:w-9 sm:h-9
-    text-gray-300
-    transition-colors transition-transform duration-300 ease-in-out
-    ${isActive ? "bg-white text-red-600 scale-110" : "bg-transparent scale-100"}
-  `}
-            >
-              <Icon size={isMobile ? 22 : 20} />
+            <div className="flex items-center justify-center w-6 h-6 text-current">
+              <Icon size={20} />
             </div>
 
             {/* Label */}
             {showText && (
-              <span
-                className={`
-                ml-2 sm:ml-3 text-sm sm:text-base whitespace-nowrap
-                transition-colors duration-200
-                ${
-                  isActive
-                    ? "text-white"
-                    : "text-gray-300 group-hover:text-white"
-                }
-              `}
-              >
+              <span className="ml-6 text-sm whitespace-nowrap">
                 {item.label}
               </span>
             )}
@@ -189,71 +245,232 @@ useEffect(() => {
 
   return (
     <div className="flex h-screen bg-gray-900 relative">
+
+{/* {isSettingsModalOpen && (
+  <SettingsPage
+    isOpen={isSettingsModalOpen}
+    onClose={() => setIsSettingsModalOpen(false)}
+    user={user}
+  />
+)} */}
+
+
+      {/* Header */}
+      <div className="fixed top-0 left-0 right-0 bg-[#212121] border-b border-gray-700 z-50 h-16">
+        <div className="flex items-center justify-between h-full px-4">
+          {/* Left section - Menu and Logo */}
+          <div className="flex items-center space-x-4">
+            <button
+              data-menu-button
+              onClick={handleToggle}
+              className="p-2 text-gray-300 cursor-pointer hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
+              aria-label="Toggle sidebar"
+            >
+              <Menu size={20} />
+            </button>
+            
+            {/* YouTube Studio Logo */}
+            <div className="flex items-center space-x-2">
+              <div className="bg-red-600 p-1.5 rounded">
+                <Video className="text-white" size={20} />
+              </div>
+              <span className="text-white font-semibold text-lg hidden sm:block">
+                Studio
+              </span>
+            </div>
+          </div>
+
+          {/* Center section - Search */}
+          <div className="flex-1 max-w-2xl mx-4 hidden md:block">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search across your channel"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-[#121212] border border-gray-600 rounded-full py-2 pl-4 pr-10 text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+              <Search className="absolute right-3 top-2.5 text-gray-400" size={18} />
+            </div>
+          </div>
+
+          {/* Right section - Notifications and User */}
+          <div className="flex items-center space-x-4">
+            {/* Mobile search button - hidden */}
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors md:hidden hidden">
+              <Search size={20} />
+            </button>
+            
+            {/* Create button */}
+            <button 
+              onClick={() => navigate("/dashboard/videoUpload")}
+              className="flex items-center space-x-2 px-4 py-2 rounded-full cursor-pointer bg-white/10 backdrop-blur-md hover:bg-white/20
+                       text-white font-semibold shadow-lg transition-all border border-white/20"
+            >
+              <Video size={18} />
+              <span className="hidden sm:inline">Create</span>
+            </button>
+
+            {/* Notifications */}
+            <button className="p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors relative">
+              <Bell size={20} />
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                3
+              </span>
+            </button>
+
+            {/* User dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <div
+                className="flex items-center cursor-pointer"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt="User avatar"
+                    className="w-8 h-8 rounded-full object-cover ring-2 ring-transparent hover:ring-blue-500 transition-all duration-300"
+                  />
+                ) : (
+                  <div className="w-8 h-8 flex justify-center items-center rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white font-semibold">
+                    {user?.username?.[0]?.toUpperCase() || "G"}
+                  </div>
+                )}
+              </div>
+
+              {/* User dropdown menu */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-[#282828] rounded-lg shadow-xl border border-gray-600 overflow-hidden z-50">
+                  <div className="p-4 border-b border-gray-600">
+                    <div className="flex items-center space-x-3">
+                      {user?.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt="User avatar"
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 flex justify-center items-center rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white font-semibold">
+                          {user?.username?.[0]?.toUpperCase() || "G"}
+                        </div>
+                      )}
+                      <div>
+                        <div className="text-white font-medium">
+                          {user?.username || "Guest"}
+                        </div>
+                        <div className="text-gray-400 text-sm">
+                          {user?.email || "guest@example.com"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="py-2">
+                    <div
+                      className="flex items-center px-4 py-3 hover:bg-gray-700 cursor-pointer text-gray-300 hover:text-white transition-colors"
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        
+                      }}
+                    >
+                      <User className="w-5 h-5 mr-3" />
+                      <span>Your Channel</span>
+                    </div>
+                    
+                    <div
+                      className="flex items-center px-4 py-3 hover:bg-gray-700 cursor-pointer text-gray-300 hover:text-white transition-colors"
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        //  setIsSettingsModalOpen(true)
+                        navigate("/accountsettings");
+                      }}
+                    >
+                      <Settings  className="w-5 h-5 mr-3" />
+                      <span>Settings</span>
+                    </div>
+
+                    <div className="border-t border-gray-600 mt-2"></div>
+
+                    <div
+                      className="flex items-center px-4 py-3 hover:bg-red-900/20 cursor-pointer text-gray-300 hover:text-red-400 transition-colors"
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        handleLogout();
+                      }}
+                    >
+                      <LogOut className="w-5 h-5 mr-3" />
+                      <span>Sign out</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-lg z-40"
+          className="fixed inset-0 top-16 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {isMobile && (
-        <button
-          onClick={handleToggle}
-          className="fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-lg shadow-lg hover:bg-gray-700 transition-colors"
-        >
-          <PanelLeft size={20} />
-        </button>
-      )}
-
       {/* Sidebar */}
       <div
+        ref={sidebarRef}
         className={`
-        bg-[#171717] border-r border-gray-700 flex flex-col transition-all duration-300 ease-in-out z-50
+        bg-[#171717] border-r border-gray-700 flex flex-col transition-all 
+        duration-300 ease-in-out z-50 
         ${
           isMobile
-            ? `fixed left-0 top-0 h-full ${
+            ? `fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 ${
                 sidebarOpen ? "translate-x-0" : "-translate-x-full"
-              } w-64`
-            : `${
+              }`
+            : `mt-16 ${
                 isExpanded
                   ? "w-48 sm:w-56 lg:w-64"
-                  : "w-12 sm:w-14 lg:w-16 flex justify-center items-center"
+                  : "w-12 sm:w-14 lg:w-16"
               }`
         }
       `}
       >
-        {/* Header with toggle */}
-        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-700 min-h-[60px]">
-          <div
-            className={`
-            flex items-center transition-all duration-200
-            ${
-              isMobile || isExpanded
-                ? "opacity-100"
-                : "opacity-0 w-0 overflow-hidden"
-            }
-          `}
-          >
-            <h1 className="text-white font-bold text-lg sm:text-xl italic truncate">
-              ToTube.
-            </h1>
-          </div>
-          <h1
-            onClick={handleToggle}
-            className="p-1.5 sm:p-2 cursor-pointer rounded-lg  hover:bg-gray-800 text-gray-400 hover:text-white transition-colors flex-shrink-0"
-          >
-            {(isMobile && sidebarOpen) || (!isMobile && isExpanded) ? (
-              <PanelLeft size={18} />
-            ) : (
-              <PanelRight size={18} />
-            )}
-          </h1>
+        {/* Sidebar Header with User Channel Info */}
+    <div className="p-2 border-b border-gray-700">
+  {/* User Channel Section */}
+  <div className={`flex items-center ${isExpanded || isMobile ? "justify-start space-x-3" : "justify-center"}`}>
+    <div className="relative">
+      {user?.avatar ? (
+        <img
+          src={user.avatar}
+          alt="Channel avatar"
+          className="w-10 h-10 rounded-full object-cover"
+        />
+      ) : (
+        <div className="w-10 h-10 flex justify-center items-center rounded-full bg-gradient-to-br from-red-500 to-red-600 text-white font-semibold text-lg">
+          {user?.username?.[0]?.toUpperCase() || "W"}
         </div>
+      )}
+    </div>
+
+    {(isExpanded || isMobile) && (
+      <div className="flex-1 min-w-0">
+        <div className="text-white font-medium text-sm mb-1">
+          {user?.username || "unknown"}
+        </div>
+        <div className="text-gray-400 text-xs truncate">
+          {user?.email || "unknown"}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
 
         {/* Main Navigation */}
-        {/* Main Navigation */}
-        <div className="flex-1 py-2 sm:py-4 overflow-y-auto">
-          <nav className="px-2 sm:px-3">
+        <div className="flex-1 py-4 overflow-y-auto">
+          <nav className="px-4 space-y-1">
             {navItems.map((item) => (
               <NavItem key={item.id} item={item} />
             ))}
@@ -261,161 +478,13 @@ useEffect(() => {
         </div>
 
         {/* Bottom Navigation */}
-        <div className="border-t border-gray-700 p-2 sm:p-3">
-          <nav className="px-2 sm:px-3">
+        <div className="border-t border-gray-700 p-4">
+          <nav className="space-y-1">
             {bottomNavItems.map((item) => (
-              <NavLink
-                key={item.id}
-                to={item.path || "#"}
-                className={`
-          flex items-center cursor-pointer px-2 sm:px-3 py-1 sm:py-1.5 mb-1 rounded-lg
-          transition-colors duration-200
-          text-gray-300 hover:text-white
-        `}
-              >
-                <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg text-gray-300 hover:text-white transition-colors transition-transform duration-300">
-                  <item.icon size={isMobile ? 22 : 20} />
-                </div>
-
-                {(isExpanded || isMobile) && (
-                  <span className="ml-2 sm:ml-3 text-sm sm:text-base whitespace-nowrap text-gray-300 hover:text-white transition-colors duration-200">
-                    {item.label}
-                  </span>
-                )}
-              </NavLink>
+              <NavItem key={item.id} item={item} />
             ))}
           </nav>
         </div>
-
-        <div className="relative"  ref={dropdownRef}>
-          {/* Main trigger button with enhanced hover effects */}
-          <div
-            className={`group relative flex items-center px-2 p-6 rounded-lg m-1 mb-5 sm:px-3 py-1 sm:py-1.5 cursor-pointer transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-black/20 ${
-              isExpanded || isMobile
-                ? "bg-neutral-700/50 hover:bg-neutral-600/50"
-                : "bg-transparent hover:bg-neutral-700/30"
-            }`}
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            {/* Avatar with subtle glow effect */}
-            {user?.avatar ? (
-              <img
-                src={user.avatar}
-                alt="User avatar"
-                className="w-8 h-8 cursor-pointer sm:w-9 sm:h-9 rounded-full object-cover
-                 flex-shrink-0 ring-2 ring-transparent group-hover:ring-red-500 transition-all duration-300"
-              />
-            ) : (
-              <div className="w-8 h-8 sm:w-9 sm:h-9 flex justify-center items-center rounded-full bg-gradient-to-br from-pink-500 to-pink-600 text-white font-semibold cursor-pointer flex-shrink-0 ring-2 ring-transparent group-hover:ring-pink-400/30 transition-all duration-300 shadow-lg">
-                {user?.username?.[0]?.toUpperCase() || "G"}
-              </div>
-            )}
-
-            {/* User info with improved animations */}
-            {(isExpanded || isMobile) && (
-              <div className="ml-2 sm:ml-3 transition-all duration-300 ease-out flex-1 transform group-hover:translate-x-0.5">
-                <div className="text-white text-xs sm:text-sm font-medium transition-colors duration-200 group-hover:text-blue-100">
-                  {user?.username || "Guest"}
-                </div>
-                <div className="text-gray-400 text-xs transition-colors 
-                duration-200 group-hover:text-gray-300">
-                  {user?.email || "guest@example.com"}
-                </div>
-              </div>
-            )}
-
-            {/* Enhanced chevron with smooth rotation - only show when expanded or mobile */}
-            {(isExpanded || isMobile) && (
-              <div>
-                <ChevronDown
-                  className={`w-4 h-4 text-gray-400 transition-all duration-300 ease-out group-hover:text-gray-200 ${
-                    isDropdownOpen ? "rotate-180 text-red-600" : "rotate-0"
-                  }`}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Enhanced dropdown with improved animations and responsive positioning */}
-          <div
-            className={`absolute bottom-full transition-all duration-300 ease-out m-1 transform origin-bottom z-50 ${
-              // Position based on sidebar state
-              isExpanded || isMobile
-                ? "left-0 right-0 mb-2"
-                : "left-full ml-2 mb-2 w-48"
-            } ${
-              isDropdownOpen
-                ? "opacity-100 scale-y-100 translate-y-0 visible"
-                : "opacity-0 scale-y-95 translate-y-2 invisible"
-            }`}
-          >
-            <div className="bg-neutral-800/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-600/50 overflow-hidden ring-1 ring-white/10">
-              {/* Subtle gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
-
-              {/* Your Channel option */}
-              <div
-                className="relative flex items-center px-3 py-3 hover:bg-gradient-to-r hover:from-neutral-700/80 hover:to-neutral-600/60 cursor-pointer transition-all duration-200 text-gray-300 hover:text-white group/item transform hover:translate-x-1"
-                onClick={() => {
-                  setIsDropdownOpen(false);
-                  navigate("/channel");
-                }}
-              >
-                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500 transform scale-y-0 group-hover/item:scale-y-100 transition-transform duration-200"></div>
-                <User className="w-4 h-4 mr-3 transition-all duration-200 group-hover/item:text-blue-400 group-hover/item:scale-110" />
-                <span className="text-sm font-medium transition-all duration-200 whitespace-nowrap">
-                  Your Channel
-                </span>
-              </div>
-
-              {/* Animated divider */}
-              <div className="relative">
-                <div className="border-t border-gray-700/50"></div>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600/20 to-transparent"></div>
-              </div>
-
-              {/* Logout option */}
-              <div
-                className="relative flex items-center px-3 py-3 hover:bg-gradient-to-r hover:from-red-900/20 hover:to-red-800/20 cursor-pointer transition-all duration-200 text-gray-300 hover:text-red-400 group/item transform hover:translate-x-1"
-                onClick={() => {
-                  setIsDropdownOpen(false);
-                  handleLogout();
-                }}
-              >
-                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-red-500 transform scale-y-0 group-hover/item:scale-y-100 transition-transform duration-200"></div>
-                <LogOut className="w-4 h-4 mr-3 transition-all duration-200 group-hover/item:text-red-400 group-hover/item:scale-110" />
-                <span className="text-sm font-medium transition-all duration-200 whitespace-nowrap">
-                  Logout
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Backdrop overlay for mobile */}
-          {isDropdownOpen && (
-            <div
-              className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm transition-opacity duration-300 sm:hidden"
-              onClick={() => setIsDropdownOpen(false)}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div
-        className={`
-        bg-[#0A0A0A]
-        ${isMobile ? "w-full" : ""}
-      `}
-      >
-        {/* Main Content */}
-
-        <div
-          className={`
-    
-    ${isMobile ? "w-full" : ""}
-  `}
-        ></div>
       </div>
     </div>
   );

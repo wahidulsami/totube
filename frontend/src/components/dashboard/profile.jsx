@@ -125,9 +125,9 @@ const Profile = () => {
   };
 
   return (
-    <div className="relative z-10 max-w-6xl mx-auto">
+    <div className="relative z-10 max-w-6xl mx-auto mt-20">
       {/* Header Section */}
-      <div className="mb-4 sm:mb-8 lg:mb-10 mt-10">
+      <div className="mb-4 sm:mb-8 lg:mb-10 mt-20">
         <div
           className="bg-gradient-to-r from-[#0F0F0F] to-[#1E1E1E] 
                   rounded-2xl shadow-2xl border border-[#2A2A2A] 
@@ -152,110 +152,112 @@ const Profile = () => {
       {/* Main Profile Card */}
       <div className="bg-gradient-to-b from-[#0F0F0F] to-[#1A1A1A] rounded-3xl shadow-2xl border border-[#2A2A2A] overflow-hidden">
         {/* Cover Section */}
-        <div className="relative w-full h-64 md:h-80">
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-          <img
-            src={coverPreview || user?.coverImage || defaultCover}
-            alt="cover"
-            className="w-full h-full object-cover"
-          />
+        {/* Cover Section (YouTube Style Small Height) */}
+<div className="relative w-full h-40 md:h-48 lg:h-56">
+  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+  <img
+    src={coverPreview || user?.coverImage || defaultCover}
+    alt="cover"
+    className="w-full h-full object-cover"
+  />
 
-          {/* Cover Actions */}
-          {user && (
-            <div className="absolute top-6 right-6 flex flex-wrap gap-3 z-20">
-              <label className="group px-6 py-3 bg-black/40 backdrop-blur-md rounded-2xl text-white text-sm font-medium cursor-pointer border border-white/20 hover:bg-red-600/90 hover:border-red-600 transition-all duration-300 transform hover:scale-105">
-                <span className="flex items-center gap-2">
-                  <Camera size={16} />
-                  Choose Cover
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleCoverImageChange}
-                  hidden
-                />
-              </label>
+  {/* Cover Actions */}
+  {user && (
+    <div className="absolute top-6 right-6 flex flex-wrap gap-3 z-20">
+      <label className="group px-6 py-3 bg-black/40 backdrop-blur-md rounded-2xl text-white text-sm font-medium cursor-pointer border border-white/20 hover:bg-red-600/90 hover:border-red-600 transition-all duration-300 transform hover:scale-105">
+        <span className="flex items-center gap-2">
+          <Camera size={16} />
+          Choose Cover
+        </span>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleCoverImageChange}
+          hidden
+        />
+      </label>
 
-              {coverFile && (
-                <button
-                  onClick={handleCoverUpload}
-                  disabled={loadingCover}
-                  className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 rounded-2xl text-sm font-medium text-white hover:from-red-700 hover:to-red-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transform hover:scale-105 shadow-lg"
-                >
-                  {loadingCover ? (
-                    <>
-                      <Spinner
-                        variant="default"
-                        className="text-white"
-                        size={16}
-                      />
-                      <span>Updating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Camera size={16} />
-                      Update Cover
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
+      {coverFile && (
+        <button
+          onClick={handleCoverUpload}
+          disabled={loadingCover}
+          className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 rounded-2xl text-sm font-medium text-white hover:from-red-700 hover:to-red-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transform hover:scale-105 shadow-lg"
+        >
+          {loadingCover ? (
+            <>
+              <Spinner
+                variant="default"
+                className="text-white"
+                size={16}
+              />
+              <span>Updating...</span>
+            </>
+          ) : (
+            <>
+              <Camera size={16} />
+              Update Cover
+            </>
           )}
+        </button>
+      )}
+    </div>
+  )}
 
-          {/* Avatar Section */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 bottom-0 translate-y-1/2 z-20">
-            <div className="relative group">
-              {/* Avatar */}
-              <div className="relative">
-                <img
-                  src={avatarPreview || user?.avatar || defaultAvatar}
-                  alt="avatar"
-                  className="w-36 h-36 rounded-full border-4 border-gray-900 object-cover shadow-2xl bg-gradient-to-br from-gray-800 to-gray-900"
-                />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/30 to-transparent" />
-              </div>
+  {/* Avatar Section */}
+  <div className="absolute left-1/2 transform -translate-x-1/2 bottom-0 translate-y-1/2 z-20">
+    <div className="relative group">
+      {/* Avatar */}
+      <div className="relative">
+        <img
+          src={avatarPreview || user?.avatar || defaultAvatar}
+          alt="avatar"
+          className="w-36 h-36 rounded-full border-4 border-gray-900 object-cover shadow-2xl bg-gradient-to-br from-gray-800 to-gray-900"
+        />
+        <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/30 to-transparent" />
+      </div>
 
-              {user && (
-                <label className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-md p-3 rounded-full cursor-pointer shadow-lg border border-white/20 hover:bg-red-600/90 hover:border-red-600 transition-all duration-300 transform hover:scale-110">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    hidden
-                  />
-                  <Camera size={18} className="text-white" />
-                </label>
-              )}
-            </div>
+      {user && (
+        <label className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-md p-3 rounded-full cursor-pointer shadow-lg border border-white/20 hover:bg-red-600/90 hover:border-red-600 transition-all duration-300 transform hover:scale-110">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            hidden
+          />
+          <Camera size={18} className="text-white" />
+        </label>
+      )}
+    </div>
 
-            {/* Update Avatar Button */}
-            {avatarFile && (
-              <div className="flex justify-center mt-4">
-                <button
-                  onClick={handleAvatarUpload}
-                  disabled={loadingAvatar}
-                  className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 rounded-2xl text-sm font-medium text-white hover:from-red-700 hover:to-red-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transform hover:scale-105 shadow-lg"
-                >
-                  {loadingAvatar ? (
-                    <>
-                      <Spinner
-                        variant="default"
-                        className="text-white"
-                        size={16}
-                      />
-                      <span>Updating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Camera size={16} />
-                      Update Avatar
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
+    {/* Update Avatar Button */}
+    {avatarFile && (
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={handleAvatarUpload}
+          disabled={loadingAvatar}
+          className="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 rounded-2xl text-sm font-medium text-white hover:from-red-700 hover:to-red-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transform hover:scale-105 shadow-lg"
+        >
+          {loadingAvatar ? (
+            <>
+              <Spinner
+                variant="default"
+                className="text-white"
+                size={16}
+              />
+              <span>Updating...</span>
+            </>
+          ) : (
+            <>
+              <Camera size={16} />
+              Update Avatar
+            </>
+          )}
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
 
         {/* Form Section */}
         <div className="pt-20  pb-6 sm:pb-8 px-4 sm:px-6 md:px-8">
