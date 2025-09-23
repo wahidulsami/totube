@@ -80,7 +80,7 @@ const handleThumnailImageChange = (e) => {
     const { width, height } = img;
 
     // Minimum size check
-    if (width < 1280 || height < 720) {
+    if (width < 1200 || height < 720) {
       toast.error("Thumbnail must be at least 1280x720 pixels!");
       setLoadingCover(false);
       URL.revokeObjectURL(objectUrl);
