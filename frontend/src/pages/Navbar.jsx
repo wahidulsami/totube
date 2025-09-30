@@ -83,7 +83,8 @@ const Navbar = ({ onToggleSidebar, isSidebarExpanded, isMobile, sidebarOpen }) =
   return (
     <>
       <header
-        className={`flex items-center justify-between px-4 py-3 text-white fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-300
+        className={`flex items-center justify-between px-4 py-3
+           text-white fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-300
           ${isScrolled ? "backdrop-blur-md bg-black/30" : "bg-gradient-to-r from-[#0f0f0f] to-[#181818]"}
         `}
       >
@@ -106,10 +107,10 @@ const Navbar = ({ onToggleSidebar, isSidebarExpanded, isMobile, sidebarOpen }) =
           </button>
 
           <div className="flex items-center space-x-2">
-            <div className="w-9 h-9 bg-red-600 rounded flex items-center justify-center">
+            <div onClick={() => navigate("/")} className="w-9 h-9 bg-red-600 rounded cursor-pointer  flex items-center justify-center">
               <span className="text-white font-bold text-base">▶</span>
             </div>
-            <span className="text-xl font-semibold  hidden sm:block" 
+            <span className="text-xl font-semibold  hidden sm:block cursor-pointer" 
             onClick={() => navigate("/")}
             >TouTube</span>
             <span className="text-lg font-semibold sm:hidden">YT</span>

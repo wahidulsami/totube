@@ -15,7 +15,7 @@ export const fetchVideos = createAsyncThunk(
     try {
       const response = await getAllVideos({ page, limit });
       // response = { statusCode, success, message, data: { docs: [...] } }
-      return response.data.docs; // <-- only return the array
+      return response.data.docs; 
     } catch (error) {
       return rejectWithValue(error.message || "Failed to load videos");
     }
@@ -27,8 +27,8 @@ export const fetchVideoById = createAsyncThunk(
   async (videoId, { rejectWithValue }) => {
     try {
       const res = await getVideoById(videoId);
-      return res.data; // যদি res.data.data থাকে:
-      // return res.data.data; <-- এইটা ঠিক হবে
+      return res.data; 
+   
     } catch (error) {
       return rejectWithValue(error.message || "Failed to load video");
     }
@@ -91,8 +91,17 @@ const videosSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
-  extraReducers: (builder) => {
+  reducers: {
+  updateLikesCount: (state, action) => {
+      const { videoId, likesCount, liked } = action.payload;
+      if (state.currentVideo && state.currentVideo._id === videoId) {
+        state.currentVideo.likesCount = likesCount;
+        state.currentVideo.liked = liked;
+      }
+    },
+
+  },
+ extraReducers: (builder) => {
     builder
       // Fetch all videos
       .addCase(fetchVideos.pending, (state) => {
@@ -109,18 +118,22 @@ const videosSlice = createSlice({
       })
 
       // Fetch video by ID
-      .addCase(fetchVideoById.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchVideoById.fulfilled, (state, action) => {
-        state.loading = false;
-        state.currentVideo = action.payload;
-      })
-      .addCase(fetchVideoById.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+// Fetch video by ID
+.addCase(fetchVideoById.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+  // 🚀 don't reset currentVideo here
+})
+.addCase(fetchVideoById.fulfilled, (state, action) => {
+  state.loading = false;
+  state.currentVideo = action.payload;
+})
+.addCase(fetchVideoById.rejected, (state, action) => {
+  state.loading = false;
+  state.currentVideo = null; // clear only on error
+  state.error = action.payload;
+})
+
 
       // Publish new video
       .addCase(publishAVideosByUser.pending, (state) => {
@@ -208,6 +221,10 @@ const videosSlice = createSlice({
         state.error = action.payload;
       });
   },
+
+
 });
 
+
+export const { updateLikesCount } = videosSlice.actions;
 export default videosSlice.reducer;

@@ -1,13 +1,4 @@
-// import Layout from "./Layout";
-// import VideoDetails from "../components/video/VideoDetails";
 
-// export default function VideoPage() {
-//   return (
-//     <Layout>
-//       <VideoDetails />
-//     </Layout>
-//   );
-// }
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar"; // তোমার sidebar import করো
 import { Menu } from "lucide-react";

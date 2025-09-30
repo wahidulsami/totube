@@ -32,7 +32,7 @@ const onSubmit = async (formData) => {
           refreshToken: res.data.refreshToken,
         })
       );
-      toast.success(res.message || "Login successful");
+    toast.success(`Welcome back, ${res.data.user.username} 👋`);
       navigate("/"); 
     } else {
    
