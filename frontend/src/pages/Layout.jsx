@@ -58,9 +58,14 @@ const Layout = ({ children }) => {
         />
 
         {/* Main Content */}
-        <div className="flex-1 bg-[#0A0A0A] overflow-y-auto pt-16">
-          {children}
-        </div>
+        <div
+  className={`flex-1 bg-[#0A0A0A] overflow-y-auto pt-16 transition-all duration-300 ${
+    isMobile ? "" : isExpanded ? "ml-64" : "ml-16"
+  }`}
+>
+  {children}
+</div>
+
       </div>
     </div>
   );

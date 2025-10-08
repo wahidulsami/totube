@@ -23,6 +23,7 @@ import SettingsPage from "./components/dashboard/SetingModel";
 // import VideoDetails from "./components/video/VideoDetails";
 import VideoPage from "./pages/videoplayer";
 import { Spinner } from "./components/ui/shadcn-io/spinner";
+import Channel from "./components/channel/channel";
 
 function App() {
   const dispatch = useDispatch();
@@ -69,7 +70,7 @@ if (loading) {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<Resetpassword />} />
-        <Route path="/:username" element={<YourChannel />} />
+     <Route path="/channel/:username" element={<Channel />} />
         <Route path="/accountsettings" element={<SettingsPage />} />
 
         

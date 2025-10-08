@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import {
   User,
@@ -14,7 +12,7 @@ import {
   Linkedin,
   Instagram,
   Globe,
-  ArrowLeft
+  ArrowLeft,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -36,9 +34,6 @@ const SettingsPage = () => {
     { id: "privacy", label: "Privacy & Security", icon: Shield },
     { id: "appearance", label: "Appearance", icon: Palette },
   ];
-
-
-
 
   const defaultAvatar = "/default/defaultAvatar.png";
   const defaultCover = "/default/defaultCover.jpg";
@@ -75,25 +70,50 @@ const SettingsPage = () => {
   };
 
   // Cover
-  const handleCoverChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+const handleCoverChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-    img.onload = () => {
-      const { width, height } = img;
-      if (width < 2048 || height < 1152) {
-        toast.error("Cover photo must be at least 2048x1152 pixels!");
-        return;
-      }
-      if (width !== 2560 || height !== 1440) {
-        toast.info("Recommended size: 2560x1440.");
-      }
-      setCoverPreview(img.src);
-      setCoverFile(file);
-    };
+
+  if (!file.type.startsWith("image/")) {
+    toast.error("Please upload an image file (JPG, PNG, WEBP).");
+    return;
+  }
+
+
+  if (file.size > 5 * 1024 * 1024) {
+    toast.error("File size must be less than 5MB.");
+    return;
+  }
+
+  const img = new Image();
+  img.src = URL.createObjectURL(file);
+
+  img.onload = () => {
+    const { width, height } = img;
+
+
+    if (width < 1128 || height < 190) {
+      toast.error("Cover image must be at least 1128x190 pixels.");
+      return;
+    }
+
+    const aspectRatio = width / height;
+    if (aspectRatio < 5.5 || aspectRatio > 6.5) {
+      toast.error("Invalid aspect ratio! Use a wide cover (around 6:1 ratio).");
+      return;
+    }
+
+
+    setCoverPreview(img.src);
+    setCoverFile(file);
+    toast.success("Cover image looks good!");
   };
+
+  img.onerror = () => {
+    toast.error("Invalid image file.");
+  };
+};
 
   const handleCoverUpload = async () => {
     if (!coverFile) return toast.error("Please select a cover image first!");
@@ -124,7 +144,7 @@ const SettingsPage = () => {
       linkedin: e.target.linkedin.value.trim(),
       instagram: e.target.instagram.value.trim(),
     };
-   Object.keys(social).forEach((key) => {
+    Object.keys(social).forEach((key) => {
       if (!social[key]) {
         delete social[key];
       }
@@ -142,58 +162,56 @@ const SettingsPage = () => {
   };
 
   return (
+    
     <div className="min-h-screen bg-[#121212] p-4 sm:p-8">
-   
+      <div className="relative max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 min-h-[600px] mt-8 sm:mt-20">
+        {/* Back Arrow above sidebar */}
+        <div className="flex flex-col w-full lg:w-72 cursor-pointer">
+          {/* Back Arrow */}
+          <div className="mb-4">
+            <button
+              className="flex items-center justify-center cursor-pointer w-10 h-10 rounded-lg border border-white/10 bg-[#1c1c1c] hover:bg-white/10 transition"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-6 w-6 text-white" />
+            </button>
 
-<div className="relative max-w-7xl mx-auto flex flex-col lg:flex-row gap-6 min-h-[600px] mt-8 sm:mt-20">
-  
-  {/* Back Arrow above sidebar */}
-  <div className="flex flex-col w-full lg:w-72 cursor-pointer">
-    {/* Back Arrow */}
-    <div className="mb-4">
-      <button
-        className="flex items-center justify-center w-10 h-10 rounded-lg border border-white/10 bg-[#1c1c1c] hover:bg-white/10 transition"
-        onClick={() => navigate(-1)}
-      >
-        <ArrowLeft className="h-6 w-6 text-white" />
-      </button>
-    </div>
-<aside
-  className="w-full lg:w-72 
+           
+          </div>
+          <aside
+            className="w-full lg:w-72 
              border-2 border-white/10 rounded-lg h-fit 
              bg-[#1c1c1c] p-4 sticky top-8"
->
-  
-
-          <div className="mb-4 pb-4 border-b border-gray-700">
-            <h2 className="text-white font-semibold text-lg">Settings</h2>
-            <p className="text-gray-400 text-sm">Manage your preferences</p>
-          </div>
-          <nav className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 cursor-pointer px-4 py-3 rounded-lg text-sm transition-all duration-200 whitespace-nowrap ${
-                    activeTab === tab.id
-                      ? "bg-gradient-to-r from-gray-600/50 to-gray-700/50 text-white shadow-lg"
-                      : "text-gray-400 hover:text-white hover:bg-white/10"
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span className="font-medium">{tab.label}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </aside>
+          >
+            <div className="mb-4 pb-4 border-b border-gray-700">
+              <h2 className="text-white font-semibold text-lg">Settings</h2>
+              <p className="text-gray-400 text-sm">Manage your preferences</p>
+            </div>
+            <nav className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-3 cursor-pointer px-4 py-3 rounded-lg text-sm transition-all duration-200 whitespace-nowrap ${
+                      activeTab === tab.id
+                        ? "bg-gradient-to-r from-gray-600/50 to-gray-700/50 text-white shadow-lg"
+                        : "text-gray-400 hover:text-white hover:bg-white/10"
+                    }`}
+                  >
+                    <Icon size={18} />
+                    <span className="font-medium">{tab.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </aside>
         </div>
 
         {/* Content */}
         <div className="flex-1">
-          <div className="bg-[#1b1b1b] border-2 border-gray-500/50 rounded-lg p-6 sm:p-8">
+          <div className="bg-[#1b1b1b] border-2 border-gray-500/50 rounded-lg p-4 sm:p-8">
             {activeTab === "profile" && (
               <div className="space-y-4">
                 {/* Header */}
@@ -207,52 +225,71 @@ const SettingsPage = () => {
                   <div className="flex flex-col items-center gap-4">
                     {/* Cover */}
 
-                    <div className="relative w-full h-40 md:h-48 lg:h-56 bg-black rounded-xl overflow-hidden shadow-lg">
-                      <img
-                        src={coverPreview || user?.coverImage || defaultCover}
-                        alt="cover"
-                        className="w-full h-full object-cover object-center"
-                      />
-
-                      <div className="absolute inset-0 bg-black/30" />
-
+                 
+                    <div className="relative bg-[#0A0A0A] rounded-xl overflow-hidden shadow-lg mx-auto w-full max-w-[1128px]">
+                      
+              
+                      <div className="w-full relative h-[160px] sm:h-auto">
+                       
+                        <img
+                          src={coverPreview || user?.coverImage || defaultCover}
+                          alt="cover"
+                          className="w-full h-full sm:h-auto object-cover sm:object-contain object-center transition-all duration-300"
+                        />
+                    
+                        <div className="absolute inset-0 bg-black/20"></div>
+                      </div>
+                    
                       {user && (
-                        <div className="absolute top-4 right-4 flex gap-2 z-20">
-                          <label
-                            className="px-4 py-2 bg-black/50 rounded-xl cursor-pointer 
-        hover:bg-red-600/90 transition-all flex items-center gap-2"
-                          >
-                            <Camera size={16} className="text-white" />
-                            <span className="text-white text-sm">
-                              Change Cover
-                            </span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleCoverChange}
-                              hidden
-                            />
-                          </label>
+                        <div className="absolute bottom-2 right-2 left-2 flex gap-2 justify-end z-10 px-2 py-1">
+                      
+                   
+                  <label
+  className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 
+    text-xs sm:text-sm rounded-lg whitespace-nowrap backdrop-blur-sm
+    ${loadingCover 
+      ? "bg-gray-600 cursor-not-allowed pointer-events-none" 
+      : "bg-black/60 text-white hover:bg-red-600 cursor-pointer"}`}
+>
+  <Camera size={14} className="sm:w-4 sm:h-4" />
+  <span className="hidden xs:inline sm:inline">Change Cover</span>
+  <span className="xs:hidden">Change</span>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleCoverChange}
+    hidden
+    disabled={loadingCover} // prevents selecting file
+  />
+</label>
 
+                       
                           {coverFile && (
                             <button
                               onClick={handleCoverUpload}
                               disabled={loadingCover}
-                              className="px-6 py-3 bg-gradient-to-r cursor-pointer from-red-600 to-red-700 rounded-2xl text-sm font-medium text-white hover:from-red-700 hover:to-red-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transform hover:scale-105 shadow-lg"
+                              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5
+                               bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-xs
+                                sm:text-sm hover:from-red-700 hover:to-red-800 disabled:opacity-50
+                                 whitespace-nowrap backdrop-blur-sm"
                             >
+                              
                               {loadingCover ? (
                                 <>
+                                  
                                   <Spinner
                                     variant="default"
                                     className="text-white"
-                                    size={16}
+                                    size={14}
                                   />
-                                  <span>Updating...</span>
+                                  <span className="hidden xs:inline">
+                                    Updating...
+                                  </span>
                                 </>
                               ) : (
                                 <>
-                                  <Camera size={16} className="text-white" />
-                                  Update Cover
+                                  
+                                  <Camera size={14} /> <span>Update</span>
                                 </>
                               )}
                             </button>
@@ -410,49 +447,46 @@ const SettingsPage = () => {
                   </div>
 
                   {/* Submit */}
-                <div className="pt-6 border-t border-[#3A3A3A] flex justify-center items-center">
-                           <button
-                             disabled={loading}
-                             type="submit"
-                             className="flex w-full sm:w-auto max-w-sm md:max-w-md items-center justify-center gap-2
+                  <div className="pt-6 border-t border-[#3A3A3A] flex justify-center items-center">
+                    <button
+                      disabled={loading}
+                      type="submit"
+                      className="flex w-full sm:w-auto max-w-sm md:max-w-md items-center justify-center gap-2
                         rounded-2xl bg-gradient-to-r from-red-600 to-red-700
                         text-white py-2.5 sm:py-3 px-4 sm:px-5 text-sm sm:text-base md:text-base font-semibold
                         hover:from-red-700 hover:to-red-800 focus:ring-4
                         focus:ring-red-600/20 transition-all duration-300
                         disabled:opacity-50 disabled:cursor-not-allowed
                         shadow-2xl"
-                           >
-                             {loading ? (
-                               <>
-                                 <Spinner
-                                   variant="default"
-                                   className="text-white"
-                                   size={20}
-                                 />
-                                 <span>Saving Changes...</span>
-                               </>
-                             ) : (
-                               <>
-                                 <UserCircle size={20} />
-                                 <span>Save Changes</span>
-                               </>
-                             )}
-                           </button>
-                         </div>
+                    >
+                      {loading ? (
+                        <>
+                          <Spinner
+                            variant="default"
+                            className="text-white"
+                            size={20}
+                          />
+                          <span>Saving Changes...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UserCircle size={20} />
+                          <span>Save Changes</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </form>
               </div>
             )}
 
             {/* Other tabs */}
-           {/* Outer container */}
+            {/* Outer container */}
 
-  {/* Settings Content */}
-  <div className="w-full">
-    {activeTab === "password" && (
-      <SettingchangePassword />
-    )}
-  </div>
-
+            {/* Settings Content */}
+            <div className="w-full">
+              {activeTab === "password" && <SettingchangePassword />}
+            </div>
 
             {activeTab === "notifications" && (
               <div>Notifications settings content here</div>

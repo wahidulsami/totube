@@ -15,7 +15,7 @@ html, body {
 
 
 .Toastify__toast {
-  border-radius: 10px;
+  border-radius: 12px!important; 
   font-size: 15px;
   font-weight: 500;
   padding: 32px; /* p-8 = 2rem = 32px */
@@ -45,6 +45,29 @@ html, body {
     top: 12px !important;      
   }
 }
+
+.Toastify__close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+
+  color: #fff !important;
+  font-size: 16px !important;
+  opacity: 1 !important;
+  transition: all 0.3s ease;
+  z-index: 10;
+
+  cursor: pointer; /* show pointer on hover */
+}
+
+
+
 
 
 @theme inline {

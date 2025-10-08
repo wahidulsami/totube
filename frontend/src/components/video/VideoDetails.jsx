@@ -28,6 +28,7 @@ import RelatedVideoSkeleton from "../ui/shadcn-io/Skeleton/RelatedVideoSkeleton"
 import ActionButtonsSkeleton from "../ui/shadcn-io/Skeleton/ActionButtonsSkeleton";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import SubscribeButton from "../subscriber";
 export default function VideoDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -245,12 +246,12 @@ export default function VideoDetails() {
   };
 
   const handleShare = () => {
-    const title = currentVideo?.title || "Check this video";
+
 
     if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
       navigator
         .share({
-          title,
+       
           url: window.location.href,
         })
         .catch(() => setShowShare(true));
@@ -267,20 +268,19 @@ export default function VideoDetails() {
   };
 
   // Handle Download
-const handleDownload = (url, title) => {
-  if (!url) {
-    toast.error("Video file not available for download.");
-    return;
-  }
+  const handleDownload = (url, title) => {
+    if (!url) {
+      toast.error("Video file not available for download.");
+      return;
+    }
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = title || "video.mp4";
-  a.click();
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = title || "video.mp4";
+    a.click();
 
-  toast.success("Download started!");
-};
-
+    toast.success("Download started!");
+  };
 
   return (
     <>
@@ -393,35 +393,32 @@ const handleDownload = (url, title) => {
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   {/* Channel Info */}
 
-        
-  <div className="flex items-center gap-3">
-  <Link to={`/${currentVideo.owner?.username}`}>
-    <img
-      src={currentVideo.owner?.avatar || defaultAvatar}
-      alt={currentVideo.owner?.name || "Channel"}
-      className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-700"
-      onError={(e) => {
-        e.target.src =
-          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face";
-      }}
-    />
-</Link>
-    <div className="flex-1">
-      {/* এখানে username কে ক্লিকেবল link বানানো হলো */}
-      <Link
-        to={`/${currentVideo.owner?.username}`} 
-        className="font-medium text-white hover:text-gray-300 cursor-pointer transition-colors"
-      >
-        {currentVideo.owner?.username || "Unknown Creator"}
-      </Link>
+                  <div className="flex items-center gap-3">
+                    <Link to={`/${currentVideo.owner?.username}`}>
+                      <img
+                        src={currentVideo.owner?.avatar || defaultAvatar}
+                        alt={currentVideo.owner?.name || "Channel"}
+                        className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-700"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face";
+                        }}
+                      />
+                    </Link>
+                    <div className="flex-1">
+                      <Link
+                        to={`/channel/${currentVideo.owner?.username}`}
+                        className="font-medium text-white hover:text-gray-300 cursor-pointer transition-colors"
+                      >
+                        {currentVideo.owner?.username || "Unknown Creator"}
+                      </Link>
 
-      <p className="text-sm text-gray-400">
-        {currentVideo.owner?.subscribersCount || "0"} subscribers
-      </p>
-    </div>
-  </div>
-
-                
+                      <p className="text-sm text-gray-400">
+                        {currentVideo.owner?.subscribersCount || "0"}{" "}
+                        subscribers
+                      </p>
+                    </div>
+                  </div>
 
                   {/* Action Buttons with Skeleton Loading */}
                   <AnimatePresence mode="wait">
@@ -483,14 +480,20 @@ const handleDownload = (url, title) => {
                         </button>
 
                         {/* Download button */}
-                <button
-  onClick={() => handleDownload(currentVideo?.videoFile, currentVideo?.title)}
-  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
->
-  <Download size={20} />
-  Download
-</button>
+                        <button
+                          onClick={() =>
+                            handleDownload(
+                              currentVideo?.videoFile,
+                              currentVideo?.title
+                            )
+                          }
+                          className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                        >
+                          <Download size={20} />
+                          Download
+                        </button>
 
+                        <SubscribeButton channelId={currentVideo.owner?._id} />
 
                         {showShare && (
                           <AnimatePresence>
@@ -565,9 +568,6 @@ const handleDownload = (url, title) => {
                             </motion.div>
                           </AnimatePresence>
                         )}
-
-                      
-                  
                       </motion.div>
                     )}
                   </AnimatePresence>

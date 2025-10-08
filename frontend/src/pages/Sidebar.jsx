@@ -132,7 +132,8 @@ const Sidebar = ({ isExpanded, isMobile, sidebarOpen, onCloseSidebar }) => {
               ? `fixed left-0 top-16 h-[calc(100vh-4rem)] ${
                   sidebarOpen ? "translate-x-0" : "-translate-x-full"
                 } w-64`
-              : `${isExpanded ? "w-64 mt-16" : "w-16 items-center mt-16"}`
+             : `${isExpanded ? "fixed left-0 top-16 w-64 h-[calc(100vh-4rem)]" : "fixed left-0 top-16 w-16 h-[calc(100vh-4rem)] items-center"}`
+
           }
         `}
       >
