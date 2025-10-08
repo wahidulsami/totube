@@ -69,7 +69,7 @@ if (loading) {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<Resetpassword />} />
-        <Route path="/channel" element={<YourChannel />} />
+        <Route path="/:username" element={<YourChannel />} />
         <Route path="/accountsettings" element={<SettingsPage />} />
 
         
@@ -93,7 +93,7 @@ if (loading) {
       {/* Toast Container */}
       <ToastContainer
         stacked
-        position="top-right"
+        position="top-center"
         autoClose={1800}
         hideProgressBar
         closeOnClick
@@ -101,7 +101,7 @@ if (loading) {
         draggable
         theme="dark"
         transition={Slide}
-        toastClassName="custom-toast"
+     
       />
     </div>
   );

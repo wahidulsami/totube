@@ -27,7 +27,7 @@ import { fetchVideos } from "../../store/videoReducer";
 import RelatedVideoSkeleton from "../ui/shadcn-io/Skeleton/RelatedVideoSkeleton";
 import ActionButtonsSkeleton from "../ui/shadcn-io/Skeleton/ActionButtonsSkeleton";
 import { toast } from "react-toastify";
-
+import { Link } from "react-router-dom";
 export default function VideoDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -392,26 +392,36 @@ const handleDownload = (url, title) => {
                 {/* Channel Info & Actions Row */}
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                   {/* Channel Info */}
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={currentVideo.owner?.avatar || defaultAvatar}
-                      alt={currentVideo.owner?.name || "Channel"}
-                      className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-700"
-                      onError={(e) => {
-                        e.target.src =
-                          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face";
-                      }}
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-medium text-white hover:text-gray-300 cursor-pointer transition-colors">
-                        {currentVideo.owner?.username || "Unknown Creator"}
-                      </h3>
-                      <p className="text-sm text-gray-400">
-                        {currentVideo.owner?.subscribersCount || "0"}{" "}
-                        subscribers
-                      </p>
-                    </div>
-                  </div>
+
+        
+  <div className="flex items-center gap-3">
+  <Link to={`/${currentVideo.owner?.username}`}>
+    <img
+      src={currentVideo.owner?.avatar || defaultAvatar}
+      alt={currentVideo.owner?.name || "Channel"}
+      className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-700"
+      onError={(e) => {
+        e.target.src =
+          "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face";
+      }}
+    />
+</Link>
+    <div className="flex-1">
+      {/* এখানে username কে ক্লিকেবল link বানানো হলো */}
+      <Link
+        to={`/${currentVideo.owner?.username}`} 
+        className="font-medium text-white hover:text-gray-300 cursor-pointer transition-colors"
+      >
+        {currentVideo.owner?.username || "Unknown Creator"}
+      </Link>
+
+      <p className="text-sm text-gray-400">
+        {currentVideo.owner?.subscribersCount || "0"} subscribers
+      </p>
+    </div>
+  </div>
+
+                
 
                   {/* Action Buttons with Skeleton Loading */}
                   <AnimatePresence mode="wait">

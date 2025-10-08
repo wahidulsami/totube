@@ -18,6 +18,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { logout } from "../store/authReducer";
 import { logout as apiLogout } from "../api/auth.api";
 
+
+
 const Navbar = ({ onToggleSidebar, isSidebarExpanded, isMobile, sidebarOpen }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isAccountOpen, setIsAccountOpen] = useState(false);
@@ -235,7 +237,7 @@ const Navbar = ({ onToggleSidebar, isSidebarExpanded, isMobile, sidebarOpen }) =
                       <DropdownItem
                         icon={<User />}
                         text="Your Channel"
-                        onClick={() => navigate("/channel")}
+                       
                       />
                       <DropdownItem
                         icon={<Settings />}
