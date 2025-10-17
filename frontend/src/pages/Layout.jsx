@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
         setIsExpanded(false);
         setSidebarOpen(false);
       } else {
-        setIsExpanded(true);
+        setIsExpanded(false);
         setSidebarOpen(true);
       }
     };

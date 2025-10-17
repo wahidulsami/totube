@@ -29,6 +29,9 @@ import ActionButtonsSkeleton from "../ui/shadcn-io/Skeleton/ActionButtonsSkeleto
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import SubscribeButton from "../subscriber";
+
+import CommentList from "../comment/CommentList";
+
 export default function VideoDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -49,6 +52,7 @@ export default function VideoDetails() {
 
   const defaultAvatar = "/default/defaultAvatar.png";
   const { currentVideo, loading, error } = useSelector((state) => state.videos);
+
 
   // Fetch video data
   useEffect(() => {
@@ -246,12 +250,12 @@ export default function VideoDetails() {
   };
 
   const handleShare = () => {
-
+    const title = currentVideo?.title || "Check this video";
 
     if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) {
       navigator
         .share({
-       
+          title,
           url: window.location.href,
         })
         .catch(() => setShowShare(true));
@@ -365,7 +369,7 @@ export default function VideoDetails() {
         <div className="max-w-screen mx-auto sm:px-6 lg:px-12 lg:py-10">
           <div className="flex flex-col xl:flex-row gap-6">
             {/* Main Video Section */}
-            <div className="flex-1 w-full max-w-full xl:max-w-[1500px]">
+            <div className="flex-1 w-full max-w-full xl:max-w-[1750px]">
               {/* Video Player */}
               <div className="relative bg-black rounded-none sm:rounded-xl overflow-hidden mb-4 group">
                 {currentVideo.videoFile ? (
@@ -611,6 +615,14 @@ export default function VideoDetails() {
                       </button>
                     )}
                 </div>
+                
+<div className="mt-6">
+  <h3 className="text-lg font-semibold text-white mb-4">Comments</h3>
+
+  <CommentList videoId={id}  />
+</div>
+
+
               </div>
             </div>
 

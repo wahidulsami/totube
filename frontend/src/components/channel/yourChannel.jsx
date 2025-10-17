@@ -25,12 +25,16 @@ import {
   Bookmark,
   Instagram,
   Mail,
+  Pen,
+  
 } from "lucide-react";
 import VideoCard from "./VideoCard";
 import SubscribeButton from "../subscriber";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const YourChannel = () => {
   const { username } = useParams();
@@ -40,6 +44,10 @@ const YourChannel = () => {
   const [activeTab, setActiveTab] = useState("videos");
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
 
   const shareLinks = {
     whatsapp: `https://wa.me/?text=${encodeURIComponent(window.location.href)}`,
@@ -149,32 +157,6 @@ const YourChannel = () => {
   const user = channel?.user || {};
   const videos = Array.isArray(channel?.videos) ? channel.videos : [];
 
-  const stats = [
-    {
-      icon: Users,
-      label: "Subscribers",
-      value: (user?.subscribersCount || 0).toLocaleString(),
-      color: "text-red-500",
-    },
-    {
-      icon: Video,
-      label: "Videos",
-      value: videos.length.toString(),
-      color: "text-blue-500",
-    },
-    {
-      icon: Eye,
-      label: "Total Views",
-      value: (user?.totalViews || 0).toLocaleString(),
-      color: "text-green-500",
-    },
-    {
-      icon: TrendingUp,
-      label: "Growth",
-      value: user?.growth || "+0%",
-      color: "text-purple-500",
-    },
-  ];
 
   const socialLinks = [
     { platform: "website", icon: Globe, url: user?.social?.url },
@@ -188,15 +170,15 @@ const YourChannel = () => {
   const tabs = [
     { id: "videos", label: "Videos", icon: Video },
     { id: "playlists", label: "Playlists", icon: Bookmark },
-    { id: "community", label: "Community", icon: MessageCircle },
-    { id: "about", label: "About", icon: User },
+    { id: "tweet", label: "Tweet", icon: MessageCircle },
+  
   ];
 
   return (
     <div className=" z-20 min-h-screen bg-gradient-to-br  from-[#0A0A0A] via-[#0F0F0F] to-[#1A1A1A] text-white overflow-hidden">
       {/* Cover & Profile Section */}
-      <div className="w-full max-w-6xl mx-auto rounded-2xl overflow-hidden mt-10 p-2">
-        <div className="w-full relative h-[160px] sm:h-auto rounded-2xl overflow-hidden">
+      <div className="w-full max-w-6xl mx-auto rounded-3xl overflow-hidden mt-10 p-2">
+        <div className="w-full relative h-[160px] sm:h-auto rounded-3xl overflow-hidden">
           <img
             src={user?.coverImage || defaultCover}
             alt="cover"
@@ -223,7 +205,7 @@ const YourChannel = () => {
             <div className="flex-1 flex flex-col items-center sm:items-start text-center sm:text-left w-full space-y-4">
               <div>
                 <div className="flex items-center gap-3 mb-1">
-                  <h1 className="text-3xl lg:text-4xl font-bold">
+                  <h1 className="text-3xl lg:text-4xl mx-auto sm:mx-0 font-bold">
                     {user?.fullname || user?.username || "Guest Channel"}
                   </h1>
                   {user?.isVerified && (
@@ -234,9 +216,18 @@ const YourChannel = () => {
                   )}
                 </div>
                 {user?.username && (
-                  <h2 className="text-lg text-gray-400 mb-1">
-                    @{user.username}
-                  </h2>
+   <div className="flex flex-col items-center sm:items-start gap-1">
+  <h2 className="text-lg text-gray-400 font-medium">@{user.username}</h2>
+  <p className="flex items-center text-sm text-gray-300 font-semibold">
+    <Users className="w-4 h-4 mr-1" />
+    {(user?.subscribersCount || 0).toLocaleString()} subscribers
+  </p>
+</div>
+
+
+
+  
+
                 )}
               </div>
               {/* Buttons */}
@@ -252,6 +243,19 @@ const YourChannel = () => {
                   <Share2 size={20} />
                   <span className="font-medium">Share</span>
                 </button>
+
+
+
+              {currentUser?._id === user?._id && (
+  <button
+    className="flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer bg-white/10 hover:bg-white/20 transition-colors"
+    onClick={() => navigate("/dashboard/profile")}
+  >
+    <Pen size={18} />
+    <span className="font-medium">Edit</span>
+  </button>
+)}
+
 
                 {/* share */}
 
@@ -336,97 +340,119 @@ const YourChannel = () => {
 
       {/* Stats */}
       <div className="relative px-4 sm:px-8 lg:px-16 max-w-7xl mx-auto mt-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {stats.map((stat, i) => {
-            const Icon = stat.icon;
-            return (
-              <div
-                key={i}
-                className="bg-white/5 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <Icon className={`w-6 h-6 ${stat.color}`} />
-                  <div className="text-xs text-gray-400 uppercase">
-                    {stat.label}
-                  </div>
-                </div>
-                <div className="text-2xl lg:text-3xl font-bold">
-                  {stat.value}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+       
 
         {/* About */}
-        <div className="bg-white/5 rounded-3xl p-8 mb-8">
-          <h3 className="text-2xl font-bold flex items-center gap-3 mb-6">
-            <User className="w-6 h-6 text-red-500" /> About This Channel
-          </h3>
-          <h2 className="text-xl font-bold mb-4">
-            Welcome to {user?.username || "this"}'s Channel
-          </h2>
-          <p className="text-gray-300 mb-6">
-            {user?.bio || "No description yet."}
-          </p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              {user?.createdAt && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Calendar className="w-5 h-5 text-blue-400" />
-                  <span>
-                    Joined{" "}
-                    {new Date(user.createdAt).toLocaleDateString("en-US", {
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </span>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {socialLinks.map((s) => {
-                const Icon = s.icon;
-                if (!s.url) return null;
-                return (
-                  <a
-                    key={s.platform}
-                    href={s.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl transition-all duration-300"
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span className="text-sm capitalize">{s.platform}</span>
-                  </a>
-                );
+<div className="bg-gradient-to-br from-white/5 to-white/[0.02]
+ backdrop-blur-sm rounded-3xl p-6 sm:p-8 mb-8 border border-white/10 shadow-xl">
+  {/* Header */}
+  <div className="flex items-center gap-3 mb-6">
+    <div className="p-2 bg-red-500/10 rounded-xl flex-shrink-0">
+      <User className="w-6 h-6 text-red-500" />
+    </div>
+    <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+      About This Channel
+    </h3>
+  </div>
+
+  {/* Welcome & Bio */}
+  <div className="mb-8">
+    <h2 className="text-2xl sm:text-3xl font-bold mb-4 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+      Welcome to {user?.username || "this"}'s Channel
+    </h2>
+    <p className="text-gray-300 mb-6 leading-relaxed text-sm sm:text-base break-words max-h-40 overflow-auto">
+      {user?.bio || "No description yet."}
+    </p>
+  </div>
+
+  {/* Grid: Channel Info & Social Links */}
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+    {/* Channel Info */}
+    <div className="space-y-4 flex flex-col">
+      {user?.createdAt && (
+        <div className="flex items-center gap-3 text-gray-300 p-4 bg-white/5 rounded-xl border border-white/5 hover:border-blue-400/30 transition-all duration-300 w-full">
+          <div className="p-2 bg-blue-400/10 rounded-lg flex-shrink-0">
+            <Calendar className="w-5 h-5 text-blue-400" />
+          </div>
+          <div>
+            <p className="text-xs text-gray-400 mb-1">Member Since</p>
+            <span className="text-white font-medium">
+              {new Date(user.createdAt).toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric",
               })}
-            </div>
+            </span>
           </div>
         </div>
+      )}
+    </div>
+
+    {/* Social Links */}
+    <div className="flex flex-col mt-6 lg:mt-0">
+      <p className="text-sm text-gray-400 mb-3 font-medium uppercase tracking-wider">
+        Connect
+      </p>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+        {socialLinks.map((s) => {
+          const Icon = s.icon;
+          if (!s.url) return null;
+          return (
+            <a
+              key={s.platform}
+              href={s.url}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex items-center justify-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/5 hover:border-white/20 transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            >
+              <Icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+              <span className="text-sm capitalize text-gray-300 group-hover:text-white transition-colors">
+                {s.platform}
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
         {/* Tabs */}
-        <div className="mb-8">
-          <nav className="flex space-x-1 bg-white/5 rounded-2xl p-2 overflow-x-auto">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold whitespace-nowrap transition-all duration-300 ${
-                    activeTab === tab.id
-                      ? "bg-red-600 text-white"
-                      : "text-gray-400 hover:text-white hover:bg-white/10"
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
+{/* Tabs */}
+<div className="w-full border-b mb-5 border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02]
+ backdrop-blur-sm rounded-t-3xl shadow-inner">
+  <div className="flex items-center gap-2 sm:gap-6 px-3 sm:px-8 overflow-x-auto scrollbar-hide">
+    {tabs.map(({ id, label, icon: Icon }) => (
+      <button
+        key={id}
+        onClick={() => setActiveTab(id)}
+        className={`relative flex items-center gap-2 py-4 px-3
+           sm:px-4 text-sm sm:text-base font-medium rounded-xl
+            transition-all duration-300 ease-in-out cursor-pointer
+          ${
+            activeTab === id
+              ? "text-white "
+              : "text-gray-400 hover:text-white/80"
+          }`}
+      >
+        <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+        <span>{label}</span>
+
+        {/* Red underline animation */}
+        <span
+          className={`absolute left-1/2 -translate-x-1/2 bottom-1 h-[2px] rounded-full bg-red-500 transition-all duration-300 ease-in-out
+            ${activeTab === id ? "w-3/4 opacity-100" : "w-0 opacity-0"}`}
+        ></span>
+      </button>
+    ))}
+  </div>
+</div>
+
+
+
+
+
 
         {/* Content */}
         {activeTab === "videos" ? (

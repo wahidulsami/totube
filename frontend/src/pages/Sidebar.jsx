@@ -6,13 +6,15 @@ import {
   Shield,
   ChevronDown,
   LogOut,
+  Settings,
+  LayoutDashboard
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { logout } from "../store/authReducer";
 import { logout as apiLogout } from "../api/auth.api";
-
+import { Link } from "react-router";
 const Sidebar = ({ isExpanded, isMobile, sidebarOpen, onCloseSidebar }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
@@ -54,61 +56,75 @@ const Sidebar = ({ isExpanded, isMobile, sidebarOpen, onCloseSidebar }) => {
     },
   ];
 
+
+const dropDown = [
+  {
+    label: "Your Channel",
+    icon: User,
+    to: `/channel/${user?.username}`,
+  },
+  {
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    to: "/dashboard",
+  },
+  {
+    label: "Setting",
+    icon: Settings,
+    to: "/accountsettings",
+  },
+];
+
+
   const NavItem = ({ item, isSubItem = false }) => {
     const Icon = item.icon;
     const showText = isMobile ? true : isExpanded;
 
     return (
-      <NavLink
-        to={item.path}
-        end={item.path === "/"}
-        onClick={() => isMobile && onCloseSidebar()}
-        className={({ isActive }) => `
-          group flex items-center cursor-pointer transition-all duration-200
-          ${isSubItem ? "ml-2 pl-4 sm:ml-4 sm:pl-6" : "px-3"} 
-          py-2 mb-1 rounded-lg
-          
-          ${!showText && !isSubItem && !isMobile ? "justify-center mx-auto" : ""}
-          ${
-            isActive
-              ? "bg-neutral-800 text-white font-medium border-l-4 border-red-600"
-              : "hover:bg-neutral-800 hover:text-white text-gray-300"
-          }
+     <NavLink
+  to={item.path}
+  end={item.path === "/"}
+  onClick={() => isMobile && onCloseSidebar()}
+  className={({ isActive }) => `
+    group flex items-center cursor-pointer transition-all duration-200 ease-in-out
+    rounded-xl px-2 py-2 mb-1
+    ${isSubItem ? "ml-2 pl-4 sm:ml-4 sm:pl-6" : ""}
+    ${!showText && !isSubItem && !isMobile ? "justify-center mx-auto" : ""}
+    ${
+      isActive
+        ? "bg-neutral-800 text-white font-medium p-4 "
+        : "hover:bg-neutral-800 text-gray-300 hover:text-white"
+    }
+  `}
+>
+  {({ isActive }) => (
+    <>
+      <div
+        className={`
+          flex items-center justify-center
+          rounded-lg w-8 h-8 
+          transition-all duration-300 ease-in-out
+          ${isActive ? " scale-110 " : "text-gray-400 group-hover:text-white scale-100"}
         `}
       >
-        {({ isActive }) => (
-          <>
-            <div
-              className={`
-                flex items-center justify-center
-                rounded-lg
-                w-8 h-8
-                text-gray-300
-                transition-colors transition-transform duration-300 ease-in-out
-                ${isActive ? " text-red-600 scale-110" : "bg-transparent scale-100"}
-              `}
-            >
-              <Icon size={20} />
-            </div>
+        <Icon size={22} />
+      </div>
 
-            {showText && (
-              <span
-                className={`
-                  ml-3 text-sm whitespace-nowrap
-                  transition-colors duration-200
-                  ${
-                    isActive
-                      ? "text-white"
-                      : "text-gray-300 group-hover:text-white"
-                  }
-                `}
-              >
-                {item.label}
-              </span>
-            )}
-          </>
-        )}
-      </NavLink>
+      {showText && (
+        <span
+          className={`
+            ml-4 text-sm font-medium
+            transition-colors duration-200
+            ${isActive ? "text-white" : "text-gray-300 group-hover:text-white"}
+          `}
+        >
+          {item.label}
+        </span>
+      )}
+    </>
+  )}
+</NavLink>
+
     );
   };
 
@@ -117,7 +133,7 @@ const Sidebar = ({ isExpanded, isMobile, sidebarOpen, onCloseSidebar }) => {
       {/* Mobile Backdrop */}
       {isMobile && sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-lg z-40"
+          className="fixed inset-0 bg-black/20 backdrop-blur-xs z-40"
           onClick={onCloseSidebar}
         />
       )}
@@ -125,12 +141,12 @@ const Sidebar = ({ isExpanded, isMobile, sidebarOpen, onCloseSidebar }) => {
       {/* Sidebar */}
       <div
         className={`
-          bg-[#0f0f0f] border-r border-gray-700 flex flex-col z-50
+          bg-[#0f0f0f] border-r border-gray-700 flex flex-col z-50 
           transition-all duration-300 ease-in-out
           ${
             isMobile
               ? `fixed left-0 top-16 h-[calc(100vh-4rem)] ${
-                  sidebarOpen ? "translate-x-0" : "-translate-x-full"
+                  sidebarOpen ? "translate-x-0 " : "-translate-x-full"
                 } w-64`
              : `${isExpanded ? "fixed left-0 top-16 w-64 h-[calc(100vh-4rem)]" : "fixed left-0 top-16 w-16 h-[calc(100vh-4rem)] items-center"}`
 
@@ -222,20 +238,22 @@ const Sidebar = ({ isExpanded, isMobile, sidebarOpen, onCloseSidebar }) => {
             >
               <div className="bg-neutral-800/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-600/50 overflow-hidden ring-1 ring-white/10">
                 <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+{dropDown.map(({ label, icon: Icon, to }) => (
+  <Link
+    key={label}
+    to={to}
+    onClick={() => setIsDropdownOpen(false)}
+    className="relative flex items-center px-3 py-3 hover:bg-gradient-to-r hover:from-neutral-700/80 hover:to-neutral-600/60 cursor-pointer transition-all duration-200 text-gray-300 hover:text-white group/item transform hover:translate-x-1 rounded-md"
+  >
+    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500 transform scale-y-0 group-hover/item:scale-y-100 transition-transform duration-200"></div>
+    <Icon className="w-4 h-4 mr-3 transition-all duration-200 group-hover/item:text-blue-400 group-hover/item:scale-110" />
+    <span className="text-sm font-medium transition-all duration-200 whitespace-nowrap">
+      {label}
+    </span>
+  </Link>
+))}
 
-                <div
-                  className="relative flex items-center px-3 py-3 hover:bg-gradient-to-r hover:from-neutral-700/80 hover:to-neutral-600/60 cursor-pointer transition-all duration-200 text-gray-300 hover:text-white group/item transform hover:translate-x-1"
-                  onClick={() => {
-                    setIsDropdownOpen(false);
-                    navigate("/channel");
-                  }}
-                >
-                  <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500 transform scale-y-0 group-hover/item:scale-y-100 transition-transform duration-200"></div>
-                  <User className="w-4 h-4 mr-3 transition-all duration-200 group-hover/item:text-blue-400 group-hover/item:scale-110" />
-                  <span className="text-sm font-medium transition-all duration-200 whitespace-nowrap">
-                    Your Channel
-                  </span>
-                </div>
+
 
                 <div className="relative">
                   <div className="border-t border-gray-700/50"></div>

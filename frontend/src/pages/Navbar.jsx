@@ -237,6 +237,7 @@ const Navbar = ({ onToggleSidebar, isSidebarExpanded, isMobile, sidebarOpen }) =
                       <DropdownItem
                         icon={<User />}
                         text="Your Channel"
+                        onClick={() => navigate(`/channel/${user?.username}`)}
                        
                       />
                       <DropdownItem
@@ -246,7 +247,9 @@ const Navbar = ({ onToggleSidebar, isSidebarExpanded, isMobile, sidebarOpen }) =
                       />
                       <Divider />
                       <DropdownItem icon={<HelpCircle />} text="Help" />
-                      <DropdownItem icon={<HelpCircle />} text="Send Feedback" />
+                      <DropdownItem icon={<HelpCircle />} text="Send Feedback" 
+                      onClick={() => navigate("/feedback")}
+                      />
                       <Divider />
                       <DropdownItem
                         onClick={handleLogout}

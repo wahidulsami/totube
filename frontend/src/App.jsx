@@ -24,6 +24,7 @@ import SettingsPage from "./components/dashboard/SetingModel";
 import VideoPage from "./pages/videoplayer";
 import { Spinner } from "./components/ui/shadcn-io/spinner";
 import Channel from "./components/channel/channel";
+import FeedbackForm from "./components/feedbeck/feedback";
 
 function App() {
   const dispatch = useDispatch();
@@ -80,6 +81,8 @@ if (loading) {
         {/* VIDEOS */}
       
         <Route path="/" element={<Home />} />
+        <Route path="/feedback" element={<FeedbackForm />} />
+
 
 
 
@@ -95,7 +98,7 @@ if (loading) {
       <ToastContainer
         stacked
         position="top-center"
-        autoClose={1800}
+        autoClose={1000}
         hideProgressBar
         closeOnClick
         pauseOnHover

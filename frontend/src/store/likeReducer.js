@@ -62,6 +62,7 @@ const likeSlice = createSlice({
   name: "likes",
   initialState: {
     likedVideos: [],
+    likedComments: [],
     loading: false,
     error: null,
   },
@@ -101,6 +102,30 @@ const likeSlice = createSlice({
       })
 
       .addCase(toggleVideoLike.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // coment like
+      .addCase(toggleCommentLike.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(toggleCommentLike.fulfilled, (state, action) => {
+        state.loading = false;
+        const { commentId, liked, likesCount } = action.payload.data;
+
+        const existing = state.likedComments.find(
+          (c) => c.commentId === commentId
+        );
+        if (existing) {
+          existing.liked = liked;
+          existing.likesCount = likesCount;
+        } else {
+          state.likedComments.push({ commentId, liked, likesCount });
+        }
+      })
+      .addCase(toggleCommentLike.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

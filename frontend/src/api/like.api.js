@@ -22,8 +22,8 @@ export const getAllLikesVideo = async() => {
 
 export const commentLike = async(commentId) => {
     try {
-        const res = await api.post(`/likes/toggle/${commentId}`)
-        return res
+        const res = await api.post(`/likes/toggle/c/${commentId}`)
+        return res;
     } catch (error) {
          throw error.response?.data || { message: " comment  liked problem" };
     }
