@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: "https://backendv1-a60l.onrender.com/api/v1",
+  baseURL: "https://backend-b84i.vercel.app",
   withCredentials: true,
 });
 
