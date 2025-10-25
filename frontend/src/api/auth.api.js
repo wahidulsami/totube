@@ -3,9 +3,11 @@ import api from "./api";
 // REGISTER
 export const registerUser = async (data) => {
   const formData = new FormData();
+
   for (let key in data) {
-    if (key === "avatar" && data[key]?.[0]) {
-      formData.append(key, data[key][0]);
+    if (key === "avatar" && data[key]) {
+      // single file support
+      formData.append(key, data[key]); 
     } else {
       formData.append(key, data[key]);
     }
@@ -14,12 +16,14 @@ export const registerUser = async (data) => {
   try {
     const { data: response } = await api.post("/users/register", formData, {
       headers: { "Content-Type": "multipart/form-data" },
+
     });
     return response;
   } catch (error) {
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
+
 
 // LOGIN
 export const loginUser = async (formData) => {
