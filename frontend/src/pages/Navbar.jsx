@@ -10,6 +10,7 @@ import {
   Settings,
   HelpCircle,
   LogOut,
+  LayoutDashboardIcon,
 } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
@@ -229,24 +230,26 @@ const Navbar = ({ onToggleSidebar, isSidebarExpanded, isMobile, sidebarOpen }) =
 
                     {/* Menu Items */}
                     <div className="py-2">
-                      <DropdownItem
-                        icon={<User />}
-                        text="Account Settings"
-                        onClick={() => navigate("/accountsettings")}
+                       <DropdownItem
+                        icon={<LayoutDashboardIcon />}
+                        text="Dashboard"
+                        onClick={() => navigate("/dashboard")}
                       />
+                   
                       <DropdownItem
                         icon={<User />}
                         text="Your Channel"
                         onClick={() => navigate(`/channel/${user?.username}`)}
                        
                       />
-                      <DropdownItem
+                         <DropdownItem
                         icon={<Settings />}
-                        text="Dashboard"
-                        onClick={() => navigate("/dashboard")}
+                        text="Account Settings"
+                        onClick={() => navigate("/accountsettings")}
                       />
+                     
                       <Divider />
-                      <DropdownItem icon={<HelpCircle />} text="Help" />
+                     
                       <DropdownItem icon={<HelpCircle />} text="Send Feedback" 
                       onClick={() => navigate("/feedback")}
                       />
