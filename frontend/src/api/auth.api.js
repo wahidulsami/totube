@@ -7,23 +7,18 @@ export const registerUser = async (data) => {
   for (let key in data) {
     if (key === "avatar" && data[key]) {
       // single file support
-      formData.append(key, data[key]);
+      formData.append(key, data[key]); 
     } else {
       formData.append(key, data[key]);
     }
   }
 
   try {
-    const { data: response } = await axios.post(
-      "https://backendv1-a60l.onrender.com/api/v1/users/register",
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true, // must be true for cookies
-      }
-    );
+    const { data: response } = await api.post("/users/register", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
 
-    return response; // now this will return actual response data
+    });
+    return response;
   } catch (error) {
     throw error.response?.data || { message: "Something went wrong" };
   }
