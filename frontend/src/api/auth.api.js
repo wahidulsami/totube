@@ -1,23 +1,24 @@
 import api from "./api";
 
+
 export const registerUser = async (data) => {
   const formData = new FormData();
   for (let key in data) {
-    if (key === "avatar" && data[key]?.[0]) {
+    if ((key === "avatar" || key === "coverImage") && data[key]?.[0]) {
       formData.append(key, data[key][0]);
     } else {
       formData.append(key, data[key]);
     }
   }
+
   try {
-    const { data } = await api.post("/users/register", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return data;
+    const { data: response } = await api.post("/users/register", formData);
+    return response;
   } catch (error) {
-    throw error.response?.data || { message: "Something went wrong" };
+    throw error.response?.data || { success: false, message: "Something went wrong" };
   }
 };
+
 
 export const loginUser = async (formData) => {
   try {
