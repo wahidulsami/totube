@@ -1,7 +1,6 @@
 import api from "./api";
 
-
-
+// REGISTER
 export const registerUser = async (data) => {
   const formData = new FormData();
   for (let key in data) {
@@ -11,16 +10,18 @@ export const registerUser = async (data) => {
       formData.append(key, data[key]);
     }
   }
+
   try {
-    const { data } = await api.post("/users/register", formData, {
+    const { data: response } = await api.post("/users/register", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
-    return data;
+    return response;
   } catch (error) {
     throw error.response?.data || { message: "Something went wrong" };
   }
 };
 
+// LOGIN
 export const loginUser = async (formData) => {
   try {
     const { data } = await api.post("/users/login", formData);
@@ -30,6 +31,7 @@ export const loginUser = async (formData) => {
   }
 };
 
+// LOGOUT
 export const logout = async () => {
   try {
     const { data } = await api.post("/users/logout");
@@ -39,6 +41,7 @@ export const logout = async () => {
   }
 };
 
+// CURRENT USER
 export const getCurrentUser = async () => {
   try {
     const { data } = await api.get("/users/current-user");
@@ -48,6 +51,7 @@ export const getCurrentUser = async () => {
   }
 };
 
+// RESET PASSWORD
 export const sendResetPasswordOTP = async (email) => {
   try {
     const { data } = await api.post("/users/reset-password-otp", { email });
@@ -57,6 +61,7 @@ export const sendResetPasswordOTP = async (email) => {
   }
 };
 
+// RESET PASSWORD CONFIRM
 export const resetPassword = async ({ email, otp, newPassword }) => {
   try {
     const { data } = await api.post("/users/reset-password", {
@@ -70,6 +75,7 @@ export const resetPassword = async ({ email, otp, newPassword }) => {
   }
 };
 
+// VERIFY OTP
 export const verifyOTP = async ({ email, otp }) => {
   try {
     const { data } = await api.post("/users/verify-otp", { email, otp });
@@ -79,6 +85,7 @@ export const verifyOTP = async ({ email, otp }) => {
   }
 };
 
+// CHANGE PASSWORD
 export const changePassword = async ({ oldPassword, newPassword }) => {
   try {
     const { data } = await api.post("/users/change-password", {
@@ -91,6 +98,7 @@ export const changePassword = async ({ oldPassword, newPassword }) => {
   }
 };
 
+// UPDATE PROFILE
 export const updateProfile = async ({ fullname, email, bio, social }) => {
   try {
     const { data } = await api.patch("/users/update-account-details", {
@@ -105,41 +113,34 @@ export const updateProfile = async ({ fullname, email, bio, social }) => {
   }
 };
 
-
+// UPDATE AVATAR
 export const updateAvatar = async (file) => {
   try {
     const formData = new FormData();
-
     formData.append("avatar", file);
 
     const { data } = await api.patch("/users/update-avatar", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
+      headers: { "Content-Type": "multipart/form-data" },
     });
 
     return data;
   } catch (error) {
-    throw error.response?.data || "Something went  wrong";
+    throw error.response?.data || "Something went wrong";
   }
 };
 
+// UPDATE COVER
 export const updateCover = async (file) => {
   try {
     const formData = new FormData();
-
     formData.append("coverImage", file);
 
     const { data } = await api.patch("/users/update-cover", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
+      headers: { "Content-Type": "multipart/form-data" },
     });
 
     return data;
   } catch (error) {
-    throw error.response?.data || "Something went  wrong";
+    throw error.response?.data || "Something went wrong";
   }
 };
