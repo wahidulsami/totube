@@ -1,11 +1,14 @@
+
+
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   Likedvideo,
   getAllLikesVideo,
   commentLike,
-  tweetLike,
+  tweetLike
 } from "@/api/like.api";
 
+import { getUserLikedComments } from "@/api/like.api";
 // Toggle Video Like
 export const toggleVideoLike = createAsyncThunk(
   "likes/toggleVideoLike",
@@ -41,6 +44,18 @@ export const toggleTweetLike = createAsyncThunk(
       return res.data;
     } catch (error) {
       return rejectWithValue(error.message || "Failed to like/unlike tweet");
+    }
+  }
+);
+
+export const fetchUserLikedComments = createAsyncThunk(
+  "likes/fetchUserLikedComments",
+  async(_, {rejectWithValue}) => {
+    try {
+      const res = await getUserLikedComments();
+      return res.data.likedComments;
+    } catch (error) {
+       return rejectWithValue(error.message || "Failed to like/unlike comment");
     }
   }
 );
@@ -128,8 +143,17 @@ const likeSlice = createSlice({
       .addCase(toggleCommentLike.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+
+      .addCase(fetchUserLikedComments.fulfilled, (state, action) => {
+        state.loading = false;
+        const likedIds = action.payload;
+        state.likedComments = likedIds.map(id => ({
+          commentId: id,
+          liked: true,
+        }));
       });
   },
-});
+}); 
 
 export default likeSlice.reducer;

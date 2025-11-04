@@ -37,3 +37,13 @@ export const tweetLike = async(tweetId) => {
           throw error.response?.data || { message: " tweet  liked problem" };
     }
 }
+
+export const getUserLikedComments = async () => {
+  try {
+    const res  = await api.get(`/likes/liked-comments`);
+    return res;
+
+  } catch (error) {
+    throw error.response?.data || { message: "Get liked comments problem" };
+  }
+}

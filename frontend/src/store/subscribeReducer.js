@@ -13,9 +13,9 @@ export const toggleSubscribe = createAsyncThunk(
   async (channelId, { rejectWithValue }) => {
     try {
       const res = await subscribeToChannel(channelId);
-      return res; // { success, message, data }
+      return res; 
     } catch (error) {
-      // Pass the message to rejected action
+     
       return rejectWithValue(error.message);
     }
   }
